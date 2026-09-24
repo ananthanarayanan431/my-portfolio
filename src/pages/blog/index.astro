@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '../../config/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { filterDrafts, sortPostsByDate } from '../../lib/posts';
+
+const posts = sortPostsByDate(
+  filterDrafts(await getCollection('blog'), !import.meta.env.PROD),
+);
+---
+
+<BaseLayout title={`Blog — ${SITE.name}`} description={`Writing by ${SITE.name}.`}>
+  <section class="py-12">
+    <h1 class="text-3xl font-bold tracking-tight">Blog</h1>
+    {
+      posts.length === 0 ? (
+        <p class="mt-6 text-[var(--text-muted)]">No posts yet.</p>
+      ) : (
+        <ul class="mt-8 space-y-6">
+          {posts.map((post) => (
+            <li class="border-t border-[var(--border)] pt-6">
+              <a href={`/blog/${post.id}/`} class="group">
+                <h2 class="font-medium group-hover:text-[var(--accent)]">{post.data.title}</h2>
+                <p class="mt-1 text-sm text-[var(--text-muted)]">
+                  <FormattedDate date={post.data.pubDate} />
+                </p>
+                <p class="mt-2 text-sm leading-relaxed text-[var(--text-muted)]">
+                  {post.data.description}
+                </p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

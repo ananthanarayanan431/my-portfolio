@@ -17,9 +17,9 @@ const { title, description } = Astro.props;
   <head>
     <BaseHead title={title} description={description} />
   </head>
-  <body class="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased">
+  <body class="flex min-h-screen flex-col bg-[var(--bg)] text-[var(--text)] antialiased">
     <Header name={SITE.name} nav={SITE.nav} />
-    <main class="mx-auto max-w-3xl px-4">
+    <main class="mx-auto w-full max-w-3xl flex-1 px-4">
       <slot />
     </main>
     <Footer name={SITE.name} />

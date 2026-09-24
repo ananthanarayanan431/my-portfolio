@@ -25,12 +25,6 @@ const profiles = [
   },
   { label: 'Email', icon: ICONS.email, href: `mailto:${SITE.email}`, detail: SITE.email },
 ];
-
-const wins = [
-  { value: '40% → 90%', label: 'agent decision accuracy' },
-  { value: '40%', label: 'lower response latency' },
-  { value: '80%', label: 'of manual research automated' },
-];
 ---
 
 <section class="pt-10 pb-12">
@@ -49,22 +43,10 @@ const wins = [
     I build AI agents that ship to production and keep working when real users show up.
   </p>
   <p class="mt-3 max-w-xl leading-relaxed text-[var(--text-muted)]">
-    Product Engineer at Oraczen with 4+ years in AI. I design multi-agent systems, RAG pipelines,
+    Product Engineer at Oraczen with 2+ years in AI. I design multi-agent systems, RAG pipelines,
     LLM-as-a-Judge evaluations, and real-time voice agents over WebRTC. I also write about what I
     build, so other engineers can ship production AI instead of just following tutorials.
   </p>
-
-  <dl class="mt-6 grid max-w-xl grid-cols-3 gap-3">
-    {
-      wins.map((win) => (
-        <div class="rounded-lg border border-[var(--border)] px-3 py-3">
-          <dt class="sr-only">{win.label}</dt>
-          <dd class="text-lg font-semibold tracking-tight">{win.value}</dd>
-          <dd class="mt-0.5 text-xs leading-snug text-[var(--text-muted)]">{win.label}</dd>
-        </div>
-      ))
-    }
-  </dl>
 
   <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--text-muted)]">
     {

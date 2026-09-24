@@ -1,0 +1,41 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
+// PLACEHOLDER: replaced by src/config/site.ts in Task 4.
+const name = 'Your Name';
+const nav = [
+  { label: 'Projects', href: '/projects' },
+  { label: 'Blog', href: '/blog' },
+];
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <script is:inline>
+      try {
+        const stored = localStorage.getItem('theme');
+        if (stored) document.documentElement.dataset.theme = stored;
+      } catch (e) {
+        /* storage blocked — fall back to the dark default */
+      }
+    </script>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body class="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased">
+    <Header name={name} nav={nav} />
+    <main class="mx-auto max-w-3xl px-4">
+      <slot />
+    </main>
+    <Footer name={name} />
+  </body>
+</html>

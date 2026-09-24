@@ -1,0 +1,22 @@
+---
+interface Props {
+  title: string;
+  href?: string;
+}
+
+const { title, href } = Astro.props;
+---
+
+<section class="border-t border-[var(--border)] py-12">
+  <div class="mb-6 flex items-baseline justify-between">
+    <h2 class="text-xl font-semibold tracking-tight">{title}</h2>
+    {
+      href && (
+        <a href={href} class="text-sm text-[var(--text-muted)] hover:text-[var(--accent)]">
+          View all &rarr;
+        </a>
+      )
+    }
+  </div>
+  <slot />
+</section>

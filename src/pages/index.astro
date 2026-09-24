@@ -2,8 +2,17 @@
 import { SITE } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Experience from '../components/Experience.astro';
+import Skills from '../components/Skills.astro';
 ---
 
 <BaseLayout title={`${SITE.name} — ${SITE.title}`} description={SITE.description}>
   <Hero />
+  <Section title="Experience">
+    <Experience />
+  </Section>
+  <Section title="Skills">
+    <Skills />
+  </Section>
 </BaseLayout>

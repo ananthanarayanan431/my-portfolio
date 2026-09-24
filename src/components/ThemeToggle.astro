@@ -1,13 +1,21 @@
 <button
   id="theme-toggle"
   type="button"
-  aria-label="Toggle colour theme"
+  aria-label="Switch to light theme"
+  aria-pressed="false"
   class="rounded-md border border-[var(--border)] px-2 py-1 text-sm text-[var(--text-muted)] hover:text-[var(--text)]"
 >
   <span aria-hidden="true" data-theme-icon>&#9789;</span>
 </button>
 
 <script>
+  import { nextTheme, resolveTheme } from '../lib/theme';
+
+  // Survives view transitions: Astro dedupes inline component scripts by content, so this
+  // module is evaluated exactly once per page load, not once per swap. That makes a
+  // module-scoped variable a safe place to carry the visitor's choice when storage is blocked.
+  let inMemory: string | null = null;
+
   function readTheme(): string | null {
     try {
       return localStorage.getItem('theme');
@@ -20,31 +28,37 @@
     try {
       localStorage.setItem('theme', value);
     } catch {
-      /* storage blocked — theme still applies for this page view */
+      /* storage blocked — inMemory carries the choice for this page view instead */
     }
   }
 
-  function syncIcon(): void {
+  function syncControl(): void {
     const isLight = document.documentElement.dataset.theme === 'light';
     document.querySelectorAll('[data-theme-icon]').forEach((el) => {
       el.textContent = isLight ? '☀' : '☽';
     });
+    const button = document.getElementById('theme-toggle');
+    button?.setAttribute('aria-pressed', String(isLight));
+    button?.setAttribute(
+      'aria-label',
+      isLight ? 'Switch to dark theme' : 'Switch to light theme',
+    );
   }
 
   function bind(): void {
-    syncIcon();
+    syncControl();
     document.getElementById('theme-toggle')?.addEventListener('click', () => {
-      const next = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+      const next = nextTheme(document.documentElement.dataset.theme);
       document.documentElement.dataset.theme = next;
+      inMemory = next;
       writeTheme(next);
-      syncIcon();
+      syncControl();
     });
   }
 
   bind();
   document.addEventListener('astro:after-swap', () => {
-    const stored = readTheme();
-    if (stored) document.documentElement.dataset.theme = stored;
+    document.documentElement.dataset.theme = resolveTheme(readTheme(), inMemory);
     bind();
   });
 </script>

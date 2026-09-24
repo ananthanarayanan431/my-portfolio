@@ -39,4 +39,25 @@ The build output is fully static, so any static host works.
 
 - **Vercel / Netlify** — build command `pnpm build`, output directory `dist`.
 - **Cloudflare Pages** — same, with `NODE_VERSION=22`.
-- **GitHub Pages** — set `site` and `base` in `astro.config.mjs`, then publish `dist/`.
+- **GitHub Pages** — supported at a domain root only: a user/org page
+  (`https://yourhandle.github.io`) or a custom domain. Set `site` in `astro.config.mjs` and
+  publish `dist/`. Leave `base` unset.
+
+### Why a GitHub Pages *project* page needs extra work
+
+Serving from a subpath (`https://yourhandle.github.io/my-site/`, which needs
+`base: '/my-site'`) does **not** work as-is. Astro rewrites asset URLs for `base`, but it does
+not rewrite hrefs written by hand — and this site writes its own. `/`, `/blog`, `/projects` and
+`/resume.pdf` would each resolve to the org root and 404, and every RSS item would link to a
+missing page.
+
+To deploy at a subpath, route each internal link through the base first:
+
+```ts
+// src/lib/href.ts
+export const href = (path: string) =>
+  import.meta.env.BASE_URL.replace(/\/$/, '') + path;
+```
+
+then apply it in `Header.astro`, `Hero.astro`, `Section.astro`, `pages/blog/index.astro`,
+`pages/404.astro`, `components/BaseHead.astro` and `pages/rss.xml.ts`.

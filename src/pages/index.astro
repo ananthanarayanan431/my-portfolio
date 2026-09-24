@@ -4,20 +4,21 @@ import { SITE } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
+import Activity from '../components/Activity.astro';
 import Experience from '../components/Experience.astro';
 import Skills from '../components/Skills.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { featuredProjects } from '../lib/projects';
 
-const featured = featuredProjects(await getCollection('projects'), 3);
+const featured = featuredProjects(await getCollection('projects'), 4);
 ---
 
 <BaseLayout title={`${SITE.name} — ${SITE.title}`} description={SITE.description}>
   <Hero />
-  <Section title="Experience">
-    <Experience />
+  <Section title="Activity" subtitle="GitHub contributions over the last year.">
+    <Activity />
   </Section>
-  <Section title="Featured projects" href="/projects">
+  <Section title="Projects" subtitle="Some of the things I've been building." href="/projects">
     {
       featured.length === 0 ? (
         <p class="text-[var(--text-muted)]">No projects yet.</p>
@@ -30,7 +31,10 @@ const featured = featuredProjects(await getCollection('projects'), 3);
       )
     }
   </Section>
-  <Section title="Skills">
+  <Section title="Experience" subtitle="Where I've worked.">
+    <Experience />
+  </Section>
+  <Section title="Skills" subtitle="Tools and technologies I use.">
     <Skills />
   </Section>
 </BaseLayout>

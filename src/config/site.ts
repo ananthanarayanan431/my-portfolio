@@ -11,11 +11,13 @@ export interface NavItem {
 
 export const SITE = {
   name: 'Anantha Narayanan R',
-  title: 'Product Engineer — AI Agents & LLM Systems',
+  title: 'Product Engineer, AI Agents & LLM Systems',
   description:
     'Product engineer building production AI agents, Text-to-SQL systems, multi-agent research pipelines, and real-time voice agents.',
   bio: 'I build production AI systems: ReAct and multi-agent architectures with LangGraph, RAG pipelines, LLM-as-a-Judge evaluation, and real-time voice agents over WebRTC. Currently a Product Engineer at Oraczen; previously a Software Engineer at Launch Ventures. B.Tech in Artificial Intelligence and Data Science from Sri Sairam Engineering College.',
   location: 'Hyderabad, India',
+  photo: '/profile.jpg',
+  githubUser: 'ananthanarayanan431',
   resumePath: '/resume.pdf',
   nav: [
     { label: 'Projects', href: '/projects' },

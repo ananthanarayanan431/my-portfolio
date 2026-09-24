@@ -12,13 +12,16 @@ interface Props {
 const { name, nav } = Astro.props;
 ---
 
-<header class="border-b border-[var(--border)]">
-  <nav class="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-    <a href="/" class="font-semibold text-[var(--text)]">{name}</a>
-    <div class="flex items-center gap-4">
+<header>
+  <nav class="mx-auto flex max-w-3xl items-center justify-between px-4 py-6">
+    <a href="/" class="font-medium lowercase text-[var(--text)]">{name}</a>
+    <div class="flex items-center gap-5">
       {
         nav.map((item) => (
-          <a href={item.href} class="text-sm text-[var(--text-muted)] hover:text-[var(--text)]">
+          <a
+            href={item.href}
+            class="text-sm lowercase text-[var(--text-muted)] hover:text-[var(--text)]"
+          >
             {item.label}
           </a>
         ))

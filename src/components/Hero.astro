@@ -3,11 +3,18 @@ import { SITE } from '../config/site';
 import SocialLinks from './SocialLinks.astro';
 ---
 
-<section class="py-16">
-  <p class="text-sm text-[var(--text-muted)]">{SITE.location}</p>
-  <h1 class="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">{SITE.name}</h1>
-  <p class="mt-2 text-lg text-[var(--accent)]">{SITE.title}</p>
+<section class="pt-10 pb-12">
+  <img
+    src={SITE.photo}
+    alt={`Photo of ${SITE.name}`}
+    width="96"
+    height="96"
+    class="h-24 w-24 rounded-full border border-[var(--border)] object-cover"
+  />
+  <h1 class="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">{SITE.name}</h1>
+  <p class="mt-2 text-lg text-[var(--text-muted)]">{SITE.title}</p>
   <p class="mt-6 max-w-2xl leading-relaxed text-[var(--text-muted)]">{SITE.bio}</p>
+  <p class="mt-4 text-sm text-[var(--text-muted)]">{SITE.location}</p>
   <div class="mt-8 flex flex-wrap items-center gap-6">
     <a
       href={SITE.resumePath}

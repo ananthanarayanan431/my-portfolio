@@ -1,0 +1,19 @@
+---
+import { SITE } from '../config/site';
+
+const profile = `https://github.com/${SITE.githubUser}`;
+---
+
+<a
+  href={profile}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="block overflow-x-auto rounded-lg border border-[var(--border)] p-4"
+>
+  <img
+    src={`https://ghchart.rshah.org/16161a/${SITE.githubUser}`}
+    alt={`GitHub contribution graph for ${SITE.githubUser}`}
+    loading="lazy"
+    class="min-w-[640px] w-full"
+  />
+</a>

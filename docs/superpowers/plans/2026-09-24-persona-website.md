@@ -416,7 +416,7 @@ export function featuredProjects<T extends ProjectLike>(projects: T[], limit: nu
 - [ ] **Step 12: Run the whole suite and make sure it passes**
 
 Run: `pnpm test`
-Expected: 3 files, 18 passed, 0 failed.
+Expected: 3 files, 17 passed, 0 failed.
 
 - [ ] **Step 13: Commit**
 
@@ -1695,7 +1695,7 @@ The build output is fully static, so any static host works.
 pnpm test && pnpm check && pnpm build
 ```
 
-Expected: 18 tests passed; `0 errors`; build "Complete!".
+Expected: 17 tests passed; `0 errors`; build "Complete!".
 
 - [ ] **Step 3: Confirm every expected route was emitted**
 

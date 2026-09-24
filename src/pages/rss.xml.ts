@@ -7,7 +7,7 @@ import { filterDrafts, sortPostsByDate } from '../lib/posts';
 export async function GET(context: APIContext) {
   const posts = sortPostsByDate(filterDrafts(await getCollection('blog'), false));
   return rss({
-    title: `${SITE.name} — Blog`,
+    title: `${SITE.name} | Blog`,
     description: SITE.description,
     site: context.site ?? 'https://example.com',
     items: posts.map((post) => ({

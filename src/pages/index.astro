@@ -13,7 +13,7 @@ import { featuredProjects } from '../lib/projects';
 const featured = featuredProjects(await getCollection('projects'), 4);
 ---
 
-<BaseLayout title={`${SITE.name} — ${SITE.title}`} description={SITE.description}>
+<BaseLayout title={`${SITE.name} | ${SITE.title}`} description={SITE.description}>
   <Hero />
   <Section title="Activity" subtitle="GitHub contributions over the last year.">
     <Activity />
@@ -36,5 +36,36 @@ const featured = featuredProjects(await getCollection('projects'), 4);
   </Section>
   <Section title="Skills" subtitle="Tools and technologies I use.">
     <Skills />
+  </Section>
+  <Section
+    title="Contact"
+    subtitle="Building something with AI agents? I'm open to roles, collaborations, and consulting."
+  >
+    <a
+      href={`mailto:${SITE.email}`}
+      class="text-lg font-medium underline decoration-[var(--border)] underline-offset-4 hover:decoration-[var(--text)]"
+    >
+      {SITE.email}
+    </a>
+    <p class="mt-4 text-sm text-[var(--text-muted)]">
+      You can also reach me on{' '}
+      {
+        SITE.socials
+          .filter((social) => social.icon !== 'email')
+          .map((social, i, list) => (
+            <>
+              <a
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-[var(--text)] underline decoration-[var(--border)] underline-offset-4 hover:decoration-[var(--text)]"
+              >
+                {social.label}
+              </a>
+              {i < list.length - 1 ? ' or ' : '.'}
+            </>
+          ))
+      }
+    </p>
   </Section>
 </BaseLayout>

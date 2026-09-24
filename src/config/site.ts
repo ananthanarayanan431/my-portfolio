@@ -10,12 +10,13 @@ export interface NavItem {
 }
 
 export const SITE = {
-  name: 'Anantha Narayanan R',
+  name: 'Anantha Narayanan',
   title: 'Product Engineer, AI Agents & LLM Systems',
   description:
     'Product engineer building production AI agents, Text-to-SQL systems, multi-agent research pipelines, and real-time voice agents.',
   bio: 'I build production AI systems: ReAct and multi-agent architectures with LangGraph, RAG pipelines, LLM-as-a-Judge evaluation, and real-time voice agents over WebRTC. Currently a Product Engineer at Oraczen; previously a Software Engineer at Launch Ventures. B.Tech in Artificial Intelligence and Data Science from Sri Sairam Engineering College.',
   location: 'Hyderabad, India',
+  email: 'me@ananthanarayanan.com',
   photo: '/profile.jpg',
   githubUser: 'ananthanarayanan431',
   resumePath: '/resume.pdf',
@@ -30,6 +31,6 @@ export const SITE = {
       href: 'https://www.linkedin.com/in/rananthanarayananofficial/',
       icon: 'linkedin',
     },
-    { label: 'Email', href: 'mailto:ananthanarayanan431@gmail.com', icon: 'email' },
+    { label: 'Email', href: 'mailto:me@ananthanarayanan.com', icon: 'email' },
   ] satisfies SocialLink[],
 } as const;

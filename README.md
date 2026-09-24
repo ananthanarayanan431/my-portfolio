@@ -11,6 +11,6 @@ Before Oraczen, I was a Software Engineer at Launch Ventures. I hold a B.Tech in
 
 ## Contact
 
-- Email: [ananthanarayanan431@gmail.com](mailto:ananthanarayanan431@gmail.com)
+- Email: [me@ananthanarayanan.com](mailto:me@ananthanarayanan.com)
 - LinkedIn: [rananthanarayananofficial](https://www.linkedin.com/in/rananthanarayananofficial/)
 - GitHub: [ananthanarayanan431](https://github.com/ananthanarayanan431)

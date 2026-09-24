@@ -8,7 +8,7 @@ import { sortProjects } from '../../lib/projects';
 const projects = sortProjects(await getCollection('projects'));
 ---
 
-<BaseLayout title={`Projects — ${SITE.name}`} description={`Projects by ${SITE.name}.`}>
+<BaseLayout title={`Projects | ${SITE.name}`} description={`Projects by ${SITE.name}.`}>
   <section class="py-12">
     <h1 class="text-3xl font-bold tracking-tight">Projects</h1>
     {

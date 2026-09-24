@@ -1,7 +1,9 @@
 ---
+import { SITE } from '../config/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
 ---
 
-<BaseLayout title="Your Name" description="Placeholder description.">
-  <p class="py-12">Layout wired.</p>
+<BaseLayout title={`${SITE.name} — ${SITE.title}`} description={SITE.description}>
+  <Hero />
 </BaseLayout>

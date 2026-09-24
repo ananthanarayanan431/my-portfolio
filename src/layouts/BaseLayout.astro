@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { SITE } from '../config/site';
 
 interface Props {
   title: string;
@@ -9,13 +10,6 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
-
-// PLACEHOLDER: replaced by src/config/site.ts in Task 4.
-const name = 'Your Name';
-const nav = [
-  { label: 'Projects', href: '/projects' },
-  { label: 'Blog', href: '/blog' },
-];
 ---
 
 <!doctype html>
@@ -32,10 +26,10 @@ const nav = [
     <BaseHead title={title} description={description} />
   </head>
   <body class="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased">
-    <Header name={name} nav={nav} />
+    <Header name={SITE.name} nav={SITE.nav} />
     <main class="mx-auto max-w-3xl px-4">
       <slot />
     </main>
-    <Footer name={name} />
+    <Footer name={SITE.name} />
   </body>
 </html>

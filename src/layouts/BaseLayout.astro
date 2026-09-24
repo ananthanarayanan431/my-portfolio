@@ -13,16 +13,8 @@ const { title, description } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
-    <script is:inline>
-      try {
-        const stored = localStorage.getItem('theme');
-        if (stored) document.documentElement.dataset.theme = stored;
-      } catch (e) {
-        /* storage blocked — fall back to the dark default */
-      }
-    </script>
     <BaseHead title={title} description={description} />
   </head>
   <body class="min-h-screen bg-[var(--bg)] text-[var(--text)] antialiased">

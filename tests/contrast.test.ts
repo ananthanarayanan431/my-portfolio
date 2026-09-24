@@ -31,10 +31,7 @@ describe('design token accessibility', () => {
   const css = readFileSync(new URL('../src/styles/global.css', import.meta.url), 'utf8');
   const hero = readFileSync(new URL('../src/components/Hero.astro', import.meta.url), 'utf8');
 
-  const THEMES = [
-    { label: 'dark', selector: ':root {' },
-    { label: 'light', selector: ':root[data-theme="light"] {' },
-  ];
+  const THEMES = [{ label: 'light', selector: ':root {' }];
 
   // The CTA renders --bg-coloured text on an --accent background at 14px / font-medium,
   // which is NOT "large text", so WCAG AA demands 4.5:1 rather than 3:1. The same pair also
@@ -53,9 +50,6 @@ describe('design token accessibility', () => {
     });
   }
 
-  // Guards the fix directly: white on the dark-theme accent is only 3.86:1. Darkening the
-  // shared --accent token instead would push accent links on --bg down to 3.71:1, so the
-  // text colour is the correct lever and must not drift back to white.
   it('does not use white text on the accent CTA', () => {
     const cta = hero.slice(hero.indexOf('href={SITE.resumePath}'));
     expect(cta).not.toMatch(/text-white/);

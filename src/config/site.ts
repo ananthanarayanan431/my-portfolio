@@ -10,21 +10,24 @@ export interface NavItem {
 }
 
 export const SITE = {
-  // PLACEHOLDER: replace everything in this file with your own details.
-  name: 'Your Name',
-  title: 'Software Engineer',
-  description: 'Software engineer building reliable, well-tested systems.',
-  bio: 'I build backend systems and developer tooling. Currently focused on distributed systems and developer experience. Previously at a few places you may have heard of.',
-  location: 'Bengaluru, India',
+  name: 'Anantha Narayanan R',
+  title: 'Product Engineer — AI Agents & LLM Systems',
+  description:
+    'Product engineer building production AI agents, Text-to-SQL systems, multi-agent research pipelines, and real-time voice agents.',
+  bio: 'I build production AI systems: ReAct and multi-agent architectures with LangGraph, RAG pipelines, LLM-as-a-Judge evaluation, and real-time voice agents over WebRTC. Currently a Product Engineer at Oraczen; previously a Software Engineer at Launch Ventures. B.Tech in Artificial Intelligence and Data Science from Sri Sairam Engineering College.',
+  location: 'Hyderabad, India',
   resumePath: '/resume.pdf',
   nav: [
     { label: 'Projects', href: '/projects' },
     { label: 'Blog', href: '/blog' },
   ] satisfies NavItem[],
   socials: [
-    { label: 'GitHub', href: 'https://github.com/yourhandle', icon: 'github' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/yourhandle', icon: 'linkedin' },
-    { label: 'X', href: 'https://x.com/yourhandle', icon: 'x' },
-    { label: 'Email', href: 'mailto:you@example.com', icon: 'email' },
+    { label: 'GitHub', href: 'https://github.com/ananthanarayanan431', icon: 'github' },
+    {
+      label: 'LinkedIn',
+      href: 'https://www.linkedin.com/in/rananthanarayananofficial/',
+      icon: 'linkedin',
+    },
+    { label: 'Email', href: 'mailto:ananthanarayanan431@gmail.com', icon: 'email' },
   ] satisfies SocialLink[],
 } as const;

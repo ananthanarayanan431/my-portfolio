@@ -35,12 +35,13 @@ business, not a hiring signal.
 
 | Concern | Choice | Why |
 |---|---|---|
-| Framework | Astro 5, `output: 'static'` | Content site with near-zero client JS; static deploys anywhere with no adapter. |
+| Framework | Astro 7 (`^7.3.5`), static output (the default) | Content site with near-zero client JS; static deploys anywhere with no adapter. |
 | Styling | Tailwind CSS v4 via `@tailwindcss/vite` | No config file needed in v4; keeps spacing/type consistent across sections without hand-rolled tokens. |
 | Content | Astro Content Collections + Zod | Frontmatter is validated at build time, so a malformed post date fails the build instead of shipping. |
 | Posts | MDX | Prose plus the option of embedded components later. |
 | Feeds | `@astrojs/rss`, `@astrojs/sitemap` | Standard, small, no lock-in. |
 | Package manager | pnpm | Already installed on the machine. |
+| Type checking | `@astrojs/check` + `typescript@^6` | `astro check` does not support TypeScript 7; verified during scaffolding research. |
 
 ### Alternatives rejected
 
@@ -101,7 +102,9 @@ Also out of scope: guestbook, courses, cohorts, comments, analytics, CMS integra
 
 ## Verification
 
-- `pnpm astro check` passes — types across `.astro` and `.ts`.
+- `pnpm check` passes — types across `.astro` and `.ts`.
+  **Constraint:** `astro check` rejects TypeScript 7, so the project pins
+  `typescript@^6.0.3`. Verified against `@astrojs/check@^0.9.10`.
 - `pnpm build` succeeds and emits the expected routes.
 - Unit tests (Vitest), written test-first, for the pure helpers that carry real logic:
   post sorting, draft filtering, and date formatting. Components and layout are

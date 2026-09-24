@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import { SITE } from '../../config/site';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { sortProjects } from '../../lib/projects';
+
+const projects = sortProjects(await getCollection('projects'));
+---
+
+<BaseLayout title={`Projects — ${SITE.name}`} description={`Projects by ${SITE.name}.`}>
+  <section class="py-12">
+    <h1 class="text-3xl font-bold tracking-tight">Projects</h1>
+    {
+      projects.length === 0 ? (
+        <p class="mt-6 text-[var(--text-muted)]">No projects yet.</p>
+      ) : (
+        <div class="mt-8 grid gap-4 sm:grid-cols-2">
+          {projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

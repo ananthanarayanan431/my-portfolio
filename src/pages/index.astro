@@ -7,7 +7,7 @@ import Section from '../components/Section.astro';
 import Activity from '../components/Activity.astro';
 import Experience from '../components/Experience.astro';
 import Skills from '../components/Skills.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import ProjectIndex from '../components/ProjectIndex.astro';
 import { featuredProjects } from '../lib/projects';
 
 const featured = featuredProjects(await getCollection('projects'), 4);
@@ -23,11 +23,7 @@ const featured = featuredProjects(await getCollection('projects'), 4);
       featured.length === 0 ? (
         <p class="text-[var(--text-muted)]">No projects yet.</p>
       ) : (
-        <div class="grid gap-4 sm:grid-cols-2">
-          {featured.map((project) => (
-            <ProjectCard project={project} />
-          ))}
-        </div>
+        <ProjectIndex projects={featured} />
       )
     }
   </Section>

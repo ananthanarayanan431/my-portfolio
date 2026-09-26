@@ -1,0 +1,66 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length > 0 && (
+    <nav aria-label="On this page" class="toc text-sm">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+        On this page
+      </p>
+      <ul class="space-y-1.5 border-l border-[var(--border)]">
+        {items.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              data-toc-link={h.slug}
+              class:list={[
+                '-ml-px block border-l border-transparent leading-snug text-[var(--text-muted)] hover:text-[var(--text)]',
+                h.depth === 2 ? 'pl-3' : 'pl-6 text-xs',
+              ]}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .toc :global(a[aria-current='true']) {
+    border-color: var(--text);
+    color: var(--text);
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]');
+  const sections = [...new Set([...links].map((l) => l.dataset.tocLink!))]
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  const setActive = (id: string) => {
+    links.forEach((l) => l.setAttribute('aria-current', String(l.dataset.tocLink === id)));
+  };
+
+  if (sections.length > 0) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) setActive(visible[0].target.id);
+      },
+      { rootMargin: '0px 0px -75% 0px' },
+    );
+    sections.forEach((s) => observer.observe(s));
+  }
+</script>

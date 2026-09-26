@@ -7,26 +7,21 @@ interface Props {
 
 const { project } = Astro.props;
 const { name, description, tech, liveUrl, repoUrl } = project.data;
-const href = liveUrl ?? repoUrl;
-const displayUrl = href?.replace(/^https?:\/\/(www\.)?/, '');
+const href = `/projects/${project.id}`;
+const externalUrl = liveUrl ?? repoUrl;
+const displayUrl = externalUrl?.replace(/^https?:\/\/(www\.)?/, '');
 ---
 
 <article
   class="group relative flex flex-col rounded-lg border border-[var(--border)] p-5 transition-colors hover:border-[var(--text-muted)]"
 >
   <h3 class="font-medium">
-    {
-      href ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" class="after:absolute after:inset-0">
-          {name}
-          <span aria-hidden="true" class="text-[var(--text-muted)]">
-            &#8599;
-          </span>
-        </a>
-      ) : (
-        name
-      )
-    }
+    <a href={href} class="after:absolute after:inset-0">
+      {name}
+      <span aria-hidden="true" class="text-[var(--text-muted)]">
+        &rarr;
+      </span>
+    </a>
   </h3>
   <p class="mt-2 flex-1 text-sm leading-relaxed text-[var(--text-muted)]">{description}</p>
   {

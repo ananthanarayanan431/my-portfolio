@@ -1,0 +1,130 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+const MAX_TECH = 3;
+
+// "Promptly: AI Prompt Optimization Platform" -> ["Promptly", "AI Prompt Optimization Platform"]
+function splitName(name: string): [string, string | undefined] {
+  const i = name.indexOf(':');
+  return i === -1 ? [name, undefined] : [name.slice(0, i).trim(), name.slice(i + 1).trim()];
+}
+---
+
+<ol class="project-index border-t border-[var(--border)]">
+  {
+    projects.map((project, i) => {
+      const { name, description, tech, year } = project.data;
+      const [title, tagline] = splitName(name);
+      const shownTech = tech.slice(0, MAX_TECH);
+      const extra = tech.length - shownTech.length;
+      return (
+        <li class="project-row relative border-b border-[var(--border)]">
+          <a
+            href={`/projects/${project.id}`}
+            class="grid grid-cols-[2.25rem_1fr_auto] gap-x-3 py-5 outline-none sm:grid-cols-[3rem_1fr_auto]"
+          >
+            <span class="pt-1 font-mono text-xs text-[var(--text-muted)] tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+
+            <div class="min-w-0">
+              <h3 class="text-lg font-medium tracking-tight">
+                <span class="project-title">{title}</span>
+              </h3>
+              {tagline && <p class="text-sm text-[var(--text-muted)]">{tagline}</p>}
+
+              <div class="project-detail">
+                <div class="overflow-hidden">
+                  <p class="pt-3 text-sm leading-relaxed text-[var(--text-muted)]">{description}</p>
+                </div>
+              </div>
+
+              {
+                shownTech.length > 0 && (
+                  <p class="mt-2 font-mono text-xs text-[var(--text-muted)]">
+                    {shownTech.join(' · ')}
+                    {extra > 0 && <span class="opacity-60"> · +{extra}</span>}
+                  </p>
+                )
+              }
+            </div>
+
+            <span class="flex items-start gap-3 pt-1 text-sm text-[var(--text-muted)]">
+              {year && <span class="hidden tabular-nums sm:inline">{year}</span>}
+              <span aria-hidden="true" class="project-arrow">
+                &rarr;
+              </span>
+            </span>
+          </a>
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  .project-row,
+  .project-arrow {
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease;
+  }
+
+  .project-title {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 250ms ease;
+  }
+
+  .project-detail {
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 250ms ease;
+  }
+
+  .project-row:focus-within .project-title {
+    background-size: 100% 1px;
+  }
+
+  /* Pointer devices: collapse descriptions, reveal on hover, fade siblings. */
+  @media (hover: hover) {
+    .project-detail {
+      grid-template-rows: 0fr;
+    }
+
+    .project-index:hover .project-row:not(:hover) {
+      opacity: 0.4;
+    }
+
+    .project-row:hover .project-detail,
+    .project-row:focus-within .project-detail {
+      grid-template-rows: 1fr;
+    }
+
+    .project-row:hover .project-title {
+      background-size: 100% 1px;
+    }
+
+    .project-row:hover .project-arrow,
+    .project-row:focus-within .project-arrow {
+      transform: translateX(4px);
+      color: var(--text);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-row,
+    .project-arrow,
+    .project-title,
+    .project-detail {
+      transition: none;
+    }
+  }
+</style>

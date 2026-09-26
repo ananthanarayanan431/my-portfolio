@@ -5,6 +5,7 @@ tech: ['LangGraph', 'Cognee', 'Neo4j', 'pgvector', 'FastAPI', 'Celery', 'Redis',
 repoUrl: 'https://github.com/ananthanarayanan431/cognee-project'
 featured: true
 order: 2
+year: '2026'
 ---
 
 Personal project, 2026.

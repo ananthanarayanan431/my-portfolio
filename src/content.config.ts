@@ -12,6 +12,7 @@ const projects = defineCollection({
     repoUrl: z.url().optional(),
     featured: z.boolean().default(false),
     order: z.number().optional(),
+    year: z.string().optional(),
   }),
 });
 

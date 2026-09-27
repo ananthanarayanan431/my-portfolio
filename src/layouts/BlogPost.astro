@@ -55,6 +55,26 @@ const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
     padding: 0.1rem 0.3rem;
     font-size: 0.9em;
   }
+  .prose-custom :global(figure) {
+    margin: 2rem 0;
+  }
+  .prose-custom :global(figure img) {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+  }
+  .prose-custom :global(figcaption) {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .prose-custom :global(blockquote) {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-muted);
+  }
   .prose-custom :global(pre) {
     background: var(--bg-subtle);
     border: 1px solid var(--border);

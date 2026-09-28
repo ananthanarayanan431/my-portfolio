@@ -5,6 +5,8 @@ pubDate: 2026-09-28
 tags: ['AI', 'Agents', 'LLMs', 'Contrastive Learning']
 ---
 
+import { Image } from 'astro:assets';
+import clmOverview from '../../assets/blog/contrastive-language-models/clm-overview.png';
 import CausalVsContrastive from '../../assets/blog/contrastive-language-models/causal-vs-contrastive.svg';
 import JevRequest from '../../assets/blog/contrastive-language-models/jev-request.svg';
 import LlmJevClm from '../../assets/blog/contrastive-language-models/llm-jev-clm.svg';
@@ -24,6 +26,11 @@ Today, most of those choices go through a large language model. The model reads 
 In September 2026, researchers from Stanford and NVIDIA released a model built only for this decision layer. They call it a Contrastive Language Model, or CLM. It treats each decision as a retrieval problem: given the current situation, find the best match among the actions on offer.
 
 This post explains how a CLM works: what it is, how it is built and trained, where its speed comes from, and where it falls short. Each section builds on the one before it, so reading in order helps.
+
+<figure>
+  <Image src={clmOverview} alt="Hand-drawn overview of contrastive language models: causal vs contrastive, CLM-8B, why CLMs are fast, and how CLM compares with Jev" />
+  <figcaption>The whole post at a glance.</figcaption>
+</figure>
 
 ## Causal vs contrastive: writing an answer vs picking one
 

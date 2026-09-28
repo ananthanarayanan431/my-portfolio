@@ -1,0 +1,243 @@
+---
+title: 'Contrastive Language Models, Explained: How CLM-8B Chooses Actions Without Writing Text'
+description: 'What a Contrastive Language Model is, how CLM-8B is built and trained, where its speed comes from, and where it falls short.'
+pubDate: 2026-09-28
+tags: ['AI', 'Agents', 'LLMs', 'Contrastive Learning']
+---
+
+import CausalVsContrastive from '../../assets/blog/contrastive-language-models/causal-vs-contrastive.svg';
+import JevRequest from '../../assets/blog/contrastive-language-models/jev-request.svg';
+import LlmJevClm from '../../assets/blog/contrastive-language-models/llm-jev-clm.svg';
+import Architecture from '../../assets/blog/contrastive-language-models/architecture.svg';
+import TrainingBatch from '../../assets/blog/contrastive-language-models/training-batch.svg';
+import TrainingStages from '../../assets/blog/contrastive-language-models/training-stages.svg';
+import ActionCaching from '../../assets/blog/contrastive-language-models/action-caching.svg';
+import Verifier from '../../assets/blog/contrastive-language-models/verifier.svg';
+import WhenToUse from '../../assets/blog/contrastive-language-models/when-to-use.svg';
+
+## Why agents need a different kind of model
+
+An AI agent spends most of its time on small decisions, not long answers. Before it replies, it may choose a tool, pick a file, route a request, and check whether a step worked.
+
+Today, most of those choices go through a large language model. The model reads the context and then generates its decision one token at a time. That works, but every decision pays the full cost of generation, and one task can involve dozens of them.
+
+In September 2026, researchers from Stanford and NVIDIA released a model built only for this decision layer. They call it a Contrastive Language Model, or CLM. It treats each decision as a retrieval problem: given the current situation, find the best match among the actions on offer.
+
+This post explains how a CLM works: what it is, how it is built and trained, where its speed comes from, and where it falls short. Each section builds on the one before it, so reading in order helps.
+
+## Causal vs contrastive: writing an answer vs picking one
+
+The short name "CLM" is confusing, because it has long meant a different kind of model. The two work in almost opposite ways, and that difference explains everything else in this post.
+
+A **causal language model** is the kind behind ChatGPT, Claude, and other chat assistants. It produces text one small piece at a time; each piece is called a token. Every new token depends on all the text before it. Ask it which tool to call, and it writes the answer out.
+
+A **contrastive language model** never writes. You give it the current situation, called the *state*, and a list of options, called *candidate actions*. It returns a score for each option, and your code takes the best one.
+
+<figure>
+  <CausalVsContrastive />
+  <figcaption>Causal vs contrastive language model: the same question, two ways.</figcaption>
+</figure>
+
+The right-hand flow has no loop. A causal model has to repeat its step once for every token it writes, while a contrastive model scores all options in one pass. That is the first reason a CLM is faster.
+
+There is a trade-off. A CLM can only choose from the list it is given. In the authors' dino game demo, the options are jump, duck, and run; the CLM ranks those three and will never suggest a fourth move.
+
+CLM is not the first model to give up writing for choosing. A week earlier, a company called TypeSafe released one, and it is the model CLM is compared against throughout.
+
+## System One models and Jev
+
+The name "System One model" comes from psychology. The psychologist Daniel Kahneman popularized a split between two modes of thinking. System One is fast and automatic, like recognizing a friend's face; System Two is slow and deliberate, like multiplying 17 by 24 in your head.
+
+|                    | System One                              | System Two                               |
+| ------------------ | --------------------------------------- | ---------------------------------------- |
+| Speed              | Fast, almost instant                    | Slow, step by step                       |
+| Effort             | Automatic                               | Needs attention                          |
+| Examples in people | Recognizing a face, reading a road sign | Solving a math problem, writing an essay |
+| AI equivalent      | A model that returns a quick decision   | An LLM that writes out its answer        |
+
+Chat LLMs work like System Two. They produce their answer in words and can reason through long problems, which suits writing and planning. But much of software needs something simpler: a quick judgment that plugs straight into code.
+
+Think of a support app that must decide which team gets a ticket, how urgent it is, and whether a person should look at it. Each is a small choice among options known in advance. TypeSafe calls these "smart if-statements": decisions too fuzzy for hand-written rules, but too small to justify a full LLM call.
+
+A System One model is built for exactly these decisions. It never writes text. The possible answers are defined in advance, and the model returns one of them along with how confident it is.
+
+### How Jev works
+
+Jev, released by TypeSafe AI on 15 September 2026, was the first model sold under this name. You send it two things: the input to judge, called the state, and a set of questions about it. Each question has one of three types:
+
+- **Choice:** pick one option from a list, such as which team should handle a ticket.
+- **Score:** place the input on an ordered scale, such as low, medium or high urgency.
+- **Yes/no:** give the probability that a statement is true, such as "this needs a person".
+
+Jev reads the state once and answers all the questions together. Because each answer can only come from the options you defined, the output never needs parsing and cannot drift off-topic. The example below is based on one from TypeSafe's own site.
+
+<figure>
+  <JevRequest />
+  <figcaption>How a Jev request works: one support ticket, three questions.</figcaption>
+</figure>
+
+TypeSafe puts special weight on the probabilities. It trains Jev with a method it calls Reinforcement Learning for Calibrated Decisions, which aims to make a 0.9 answer right about nine times in ten. That lets code act on the number: handle confident cases automatically and send uncertain ones to a person.
+
+Jev is a closed model, available only through TypeSafe's hosted API, and its weights are not public. A week after its launch, the CLM team took on the same kind of decision with an open model built a different way.
+
+## Three ways to make a decision: LLM, Jev and CLM
+
+An LLM, Jev and a CLM can all answer a question like "which tool should I call?", but each spends its effort in a different place.
+
+CLM does the same job and even accepts the same request format, so a Jev request can be sent to CLM unchanged. The difference is in how the work is split up, shown below for a single decision.
+
+<figure>
+  <LlmJevClm />
+  <figcaption>LLM vs Jev vs CLM: the steps behind one decision.</figcaption>
+</figure>
+
+The table puts the three side by side.
+
+|                                 | LLM (causal)                   | Jev (TypeSafe)                                              | CLM (contrastive)                                        |
+| ------------------------------- | ------------------------------ | ----------------------------------------------------------- | -------------------------------------------------------- |
+| Output                          | Free text                      | A typed answer with probabilities                           | A probability for each option                            |
+| How it decides                  | Predicts one token at a time   | Reads the state once and answers every question in one pass | Encodes state and options separately, then compares them |
+| Can it invent a new option?     | Yes                            | No                                                          | No                                                       |
+| What is reused between calls    | The shared start of the prompt | The state                                                   | The state and the options, each on its own               |
+| Are its probabilities reliable? | Not by default                 | Yes, a design goal                                          | No; they only rank the list given                        |
+| Explains its choice?            | Yes                            | No                                                          | No                                                       |
+| Access                          | Varies by model                | Closed; hosted API only                                     | Open weights, Apache 2.0                                 |
+| Time for one decision           | Seconds                        | ~70–500 ms (TypeSafe's figure)                              | Tens of ms with cached options (authors' tests)          |
+
+In short, an LLM is the most flexible, Jev is built for trustworthy probabilities, and CLM is built for speed when the options repeat. The rest of this post looks inside the CLM column: how it is built, how it learns, and why caching the options matters so much.
+
+## Architecture: two encoders on one frozen backbone
+
+Inside a CLM, the state and the options travel along two separate paths called encoders. An encoder turns text into a vector: a fixed-length list of numbers that represents what the text means. Texts with similar meaning end up with similar vectors.
+
+Each encoder has two parts. The first is Qwen3-8B, an existing open language model that only reads the text and is never changed; this is what "frozen" means. The second is a small add-on layer called a projection head, and it is the only part CLM trains.
+
+<figure>
+  <Architecture />
+  <figcaption>CLM architecture: two encoders, one shared scoring step.</figcaption>
+</figure>
+
+To make a decision, the CLM measures how close the state's vector is to each option's vector, using a standard measure called cosine similarity. It then turns those closeness scores into probabilities that add up to 100% across the options.
+
+This is also why the name CLM-8B can mislead. The 8 billion parameters belong to Qwen3-8B, which the team reused as-is. What they built and trained are the two small heads on top of it, which makes the model cheap to adapt to a new task.
+
+This setup only works if the heads learn to place each state close to its correct option. The next section explains how they learn that.
+
+## Training: learning which states and actions belong together
+
+CLM learns from examples of a state paired with the action that was actually taken. The method is called contrastive learning, and the specific version used is named InfoNCE. The idea is to pull each state toward its correct action and push it away from the wrong ones.
+
+The authors do this in batches. They take a group of matched pairs, compare every state with every action in the group, and count only the original pairs as correct. The grid below shows a batch of three question-answer pairs.
+
+<figure>
+  <TrainingBatch />
+  <figcaption>One training batch: correct pairs on the diagonal.</figcaption>
+</figure>
+
+Training rewards the model when the highlighted cells score high and the rest score low, and the heads are adjusted a little after each batch. The check runs both ways: from each question to its answer, and from each answer back to its question. That is why the authors call it bidirectional.
+
+Random wrong answers are usually easy to rule out; "Paris" is plainly not the author of a play. So in a later stage, the authors add hard negatives: wrong answers that look plausible, such as the name of a different playwright. These force the model to learn finer distinctions.
+
+The method itself is not new. It is the same one used to train CLIP, which matches images with captions, and the retrieval models behind many search and RAG systems, which match questions with documents. What CLM changes is what gets matched: states with actions, using training data chosen for that purpose.
+
+## How CLM learns, in three stages
+
+CLM learns in three stages. Each one asks for a finer match between states and actions than the one before, moving from general knowledge to the specific job of choosing actions.
+
+<figure>
+  <TrainingStages />
+  <figcaption>CLM-8B training recipe: three stages.</figcaption>
+</figure>
+
+The first stage uses ordinary questions and answers, with no agent data at all. It teaches the heads what text means in general, so that a question lands near its answer. The authors show the effect with a simple test: before this stage, plain Qwen3-8B ranked a wrong answer above "William Shakespeare" for "Who wrote Romeo and Juliet?"; afterwards, Shakespeare came first.
+
+The second stage adds the tricky wrong answers described in the previous section. The authors found that the order matters. Learning the basics first and the fine distinctions second worked better than mixing hard examples in from the start.
+
+The third stage turns to the real task. Each step of a recorded agent run becomes one state-action pair, so the model learns what a good next action looks like. Some data from the first stage stays in the mix, so the model does not forget what it learned earlier.
+
+After these three stages, the heads place each state close to its correct action. The next section shows why keeping the two sides separate is what makes CLM fast.
+
+## Why it is fast: the options are prepared once
+
+CLM's speed comes from one design choice: an option's vector never depends on the state. The authors call this disaggregating states and actions. In practice, the vectors for the options can be computed once, stored, and reused.
+
+A model that reads the state and the options together cannot do this. Whenever the state changes, it has to read everything again, including options it has already seen many times.
+
+The authors' Super Mario demo shows the difference step by step.
+
+<figure>
+  <ActionCaching />
+  <figcaption>Action caching in the Super Mario demo: one-time setup, then a loop.</figcaption>
+</figure>
+
+Without the cache, each step would need 5 encoder passes: one for the screen and one for each move. With it, each step needs 1. The comparisons that remain are simple arithmetic and take almost no time.
+
+The saving grows with the number of options and with the length of the context. With about 1,000 options, the authors report CLM is 13× faster than Jev.
+
+The open-source release is built around this idea. It keeps the vectors of recently used states and options in memory, so a repeated one never has to be encoded twice.
+
+This also sets the condition for the speedup: the options must be known ahead of time and used again and again, like a fixed list of tools. If new options are created on every call, there is nothing to store, and most of the advantage disappears. With that condition in mind, we can look at the measured results.
+
+## What the results show
+
+The authors tested CLM in two ways, and both results support the idea behind it. All figures are the authors' own and have not been independently checked.
+
+Used as-is on games, web navigation, and tool calling, CLM-8B made choices about as good as Jev's while running faster, up to 9× faster in the best case. The gains were largest where the same moves repeat every step, which is exactly where caching helps.
+
+The second test gave CLM a different role: judging solutions written by another model. CLM writes no code here; it only picks one.
+
+<figure>
+  <Verifier />
+  <figcaption>CLM as a verifier: DeepSWE setup, best of 4.</figcaption>
+</figure>
+
+After a little extra training for this task, CLM picked better solutions than choosing one at random, and better than Jev did. The authors call this role a verifier. It shows that the same idea, matching a state to the best option, still works when each option is a whole piece of code rather than a single move.
+
+The authors also found that CLM improves predictably as the backbone, the heads, and the training data grow. That is why they describe CLM-8B as a first step, with a larger version that also handles images already in training. Before relying on any of these numbers, though, it helps to know their limits.
+
+## Limitations and what outside tests found
+
+CLM's limits follow directly from the design choices described above. Some are stated by the authors; others come from third parties who tested the model.
+
+**It cannot generate.** A CLM only ranks the candidates you pass in. It produces no explanation, no draft, and no code, and it cannot propose an action that is not on the list. If the set of possible answers cannot be written down in advance, there is nothing for it to rank.
+
+**Its probabilities are relative, not calibrated.** The scores are shared out across the options you supply, so adding or removing an option changes every number. A model is called calibrated when a score of 0.9 really means it is right about nine times in ten. Jev is trained for that; nothing in the CLM release shows it.
+
+**It is tied to one backbone.** The trained heads only understand vectors produced by Qwen3-8B. Switching to a different base model means training new heads.
+
+**The best results need extra training.** The strong verifier results came from heads trained further for that specific job. Used straight out of the box, CLM should be expected to perform at the Jev-like level, not above it.
+
+**The speedup depends on cache hits.** An independent write-up on Zenn tested CLM-8B against Jev and other decision models in a Rocket League bot and on sets of edge-case questions. It found no latency advantage when the candidate actions changed from step to step, because every action then needs a full Qwen3-8B pass. It also argued that part of the published gap comes from comparing a local GPU with a round trip to Jev's cloud API.
+
+The same write-up found that CLM almost never chose neutral options such as "cannot determine", where Jev often did. Its explanation is that a neutral answer sits halfway between yes and no in the vector space, so it rarely gets the top score. This is one unreviewed test, but it matters for agents that need to say "not sure" or pass a case to a person.
+
+Taken together, these limits do not make CLM a weaker Jev. They describe a narrower tool, which works well under specific conditions.
+
+## When to use a CLM, and when not to
+
+A CLM fits decisions where the options are known in advance, used again and again, and the answer is a choice rather than an explanation. Three questions are usually enough to decide.
+
+<figure>
+  <WhenToUse />
+  <figcaption>Choosing between an LLM, Jev and a CLM: three questions.</figcaption>
+</figure>
+
+In a typical agent, this suggests a split. A generative LLM plans, writes, and handles open-ended steps. A CLM sits beside it for the repeated choices, such as which tool to call next or which of four drafted fixes to keep.
+
+Good first uses include routing requests to a fixed set of tools, sorting items into a known list of categories, and re-ranking answers produced by another model.
+
+The weights, code and server are open under Apache 2.0, and the server accepts Jev-style requests. Trying CLM on an existing workload means changing an endpoint and, if needed, training its small heads, not a whole model.
+
+The broader lesson of this release is that deciding and writing do not need the same machinery. If the scaling results hold for CLM-35B and beyond, more of an agent's routine decisions may move to models that choose instead of write.
+
+## Sources
+
+- [Contrastive Language Models: A System One Model for Fast and Generalizable Decision-Making](https://contrastive-lm.notion.site/) — authors' project blog (Kwok et al., Stanford and NVIDIA Research, 23 Sep 2026)
+- [Contrastive-LM/CLM on GitHub](https://github.com/Contrastive-LM/CLM) — code, serving stack, license
+- [What is a Contrastive Language Model (CLM)?](https://www.sanity.io/glossary/contrastive-language-model-clm) — Sanity glossary
+- [CLM (Contrastive Language Model)](https://www.envisioning.com/vocab/clm-contrastive-language-model) — Envisioning Vocab
+- [Contrastive Language Model, clearly explained](https://blog.dailydoseofds.com/p/contrastive-language-model-clearly) — Daily Dose of Data Science
+- [Introducing System One Models & Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) — TypeSafe AI
+- [Stanford and Nvidia's open CLM-8B caches reusable agent actions](https://venturebeat.com/technology/stanford-and-nvidias-open-clm-8b-caches-reusable-agent-actions-and-runs-up-to-9x-faster-than-jev-in-tests) — VentureBeat
+- [CLM-8B vs Jev: 9x Faster, 40M Trained Parameters](https://virtualuncle.com/clm-8b-jev-comparison/) — Virtual Uncle
+- [Evaluating CLM-8B as a System 1 Decision Engine vs Jev and Kev](https://zenn.dev/null_teck/articles/clm-vs-decision-models) — independent test on Zenn

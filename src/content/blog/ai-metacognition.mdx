@@ -1,0 +1,137 @@
+---
+title: "Why AI Needs to Know What It Doesn't Know"
+description: 'Models got much better at answering in 2025. The next step is metacognition: knowing when they might be wrong, and saying so.'
+pubDate: 2026-09-30
+tags: ['AI', 'LLMs', 'Metacognition', 'Hallucinations']
+---
+
+import { Image } from 'astro:assets';
+import perceptionActionLoop from '../../assets/blog/ai-metacognition/perception-action-loop.png';
+import MetacognitionParts from '../../assets/blog/ai-metacognition/metacognition-parts.svg';
+
+> "When you know a thing, to hold that you know it; and when you do not know a thing, to allow that you do not know it; this is knowledge."
+>
+> Confucius, *Analects* 2.17 (James Legge translation, 1861)
+
+## A lawyer, a chatbot, and cases that never existed
+
+In 2023, a New York lawyer named Steven Schwartz used ChatGPT to research a lawsuit against the airline Avianca. It gave him more than half a dozen court decisions that supported his client, with names like *Varghese v. China Southern Airlines*. He put them in a brief and filed it.
+
+The airline's lawyers could not find any of them. Neither could the judge. At one point Schwartz asked the chatbot directly whether *Varghese* was a real case. It said yes, and told him he could find it on the legal databases Westlaw and LexisNexis. He could not, because it did not exist. The judge fined the lawyers and their firm $5,000.
+
+The chatbot was not lying on purpose. It had no reliable way to tell a case it had learned about from a case it had just made up, so it presented both in the same confident tone. Being wrong was one problem. Being sure it was right was a second, separate problem, and the second one is what cost the lawyers.
+
+That second problem is what this post is about. Most of the progress in AI during 2025 went into making models better at doing tasks: reasoning through problems, looking things up, and completing multi-step work. Models are now very good at that. They are much worse at judging how well they are doing it. Researchers call that skill **metacognition**, and a July 2026 survey from Yale and UC Irvine, [Metacognition in LLMs: Foundations, Progress, and Opportunities](https://arxiv.org/abs/2607.11881), reviews what we know about it so far. No technical background is needed for what follows.
+
+## Thinking vs. thinking about your thinking
+
+Psychologists separate two kinds of mental work.
+
+**Cognition** is doing the task: reading the question, recalling facts, working out the answer. LLMs imitate this well because they have learned patterns from a very large amount of text.
+
+**Metacognition** is checking and steering that work while it happens. It means noticing that you are unsure, deciding which approach suits the problem, knowing when to slow down, and correcting yourself before you commit to an answer.
+
+A student taking an exam shows the difference. Solving each question is cognition. Looking at question 7 and thinking "I am not sure about this one, I will come back to it and double-check" is metacognition. Two students with the same knowledge can score very differently depending on how well they do that second part. The survey notes that research on students links this skill closely to academic results: weaker students tend to overestimate themselves and under-prepare.
+
+Humans are not especially good at this either. In 1999, psychologists Justin Kruger and David Dunning tested students on grammar, logic, and humor. Those who scored in the bottom quarter, around the 12th percentile on average, estimated that they were in the 62nd. In one logic test, the lowest group believed they had solved about 5.5 problems. On average they had solved 0.3.
+
+Kruger and Dunning's explanation was that the skill you need to do something well is often the same skill you need to notice you are doing it badly. They used the word metacognition for what was missing. When they taught the low scorers how to solve the problems, those students also got better at judging their own work ([the 1999 study](https://psycnet.apa.org/record/1999-15054-002)).
+
+Charles Darwin had made the same observation in 1871:
+
+> "Ignorance more frequently begets confidence than does knowledge."
+>
+> Charles Darwin, *The Descent of Man*
+
+Overconfidence is an old human problem. LLMs have their own version of it, and it shows up in the same way: the less they know about something, the less able they are to notice.
+
+## Why today's AI gets this wrong
+
+A standard LLM works in one pass: a question goes in, the model processes it, and an answer comes out. Nothing in that pipeline stops to ask "how sure am I?" before the answer is sent. The survey's review of the research points to a few consistent problems.
+
+- **Overconfidence.** Across many tasks, models tend to be more confident than their accuracy justifies. They also struggle to lower their confidence after they have been wrong, which humans can do.
+- **Confident hallucinations.** One study found that models produce high-certainty hallucinations, wrong answers stated with strong confidence, consistently across different models and tasks.
+- **Confidence that does not match what the model "knows".** Models carry internal signals of uncertainty, but the confidence they express in words often does not match those signals. When asked to rate confidence from 0 to 100, over 75% of answers in one study landed on just three values.
+- **Better reasoning does not fix it.** Long step-by-step reasoning can improve accuracy while making the model worse at judging whether its own answer is right.
+
+The last point matters most. It shows that self-awareness does not come for free as models get smarter. It has to be measured and built on purpose.
+
+The Avianca brief was not a one-off. Here are three well-documented cases where an AI system gave a wrong answer with no hint of doubt.
+
+| Year | System                           | What it said with full confidence                                                                     | What happened next                                                                                                                                                                                                         |
+| ---- | -------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2024 | Google AI Overviews              | To keep cheese from sliding off pizza, add non-toxic glue to the sauce. It also suggested eating rocks. | Screenshots spread widely. Google called them isolated examples and scaled back some AI answers ([BBC](https://www.bbc.com/news/articles/cd11gzejgz4o)).                                                                 |
+| 2023 | ChatGPT, used for a court filing | Several airline cases that did not exist, and a confirmation that one of them was real                | The lawyers and their firm were fined $5,000 ([court order](https://www.nhd.uscourts.gov/sites/default/files/pdf/Mata-v-Avianca-sanctions-order.PDF)).                                                                    |
+| 2022 | Air Canada's website chatbot     | A grieving passenger could book a full fare for a funeral and claim the bereavement discount afterwards | The real policy said otherwise. Air Canada argued the chatbot was responsible for its own statements. A tribunal rejected that in 2024 and ordered the airline to pay about CA$812 ([BBC](https://www.bbc.com/travel/article/20240222-air-canada-chatbot-misinformation-what-travellers-should-know)). |
+
+None of these systems said "I'm not sure" or "please check this". In each case, that one sentence would have prevented most of the damage.
+
+## The shift: from a straight line to a loop
+
+The proposed change is structural. Instead of a one-way pipeline, the model works inside a loop that checks itself before it answers.
+
+<figure>
+  <Image src={perceptionActionLoop} alt="From a one-pass LLM pipeline (2025) to a monitor–model–control loop (2026)" />
+  <figcaption>From a one-pass LLM pipeline (2025) to a monitor–model–control loop (2026).</figcaption>
+</figure>
+
+On the left is the standard setup: input, processing nobody can see inside, output. Because nothing checks the answer before it leaves, confident mistakes pass straight through.
+
+On the right, two steps are added around the language model:
+
+1. **Monitor.** Before and during the work, the system estimates how uncertain it is and how well the task is going.
+2. **Control.** Based on that estimate, it decides what to do next: plan differently, switch strategy, spend more effort, look something up, or say "I'm not sure".
+
+The results feed back into the next round, so the system can adjust before it commits to a final answer. The survey describes metacognition in exactly these terms: a loop between monitoring and control. Psychologists call this a perception-action loop, because the system perceives its own state and then acts on what it perceives.
+
+## The five parts, in plain terms
+
+The research borrows its breakdown of metacognition from psychology. Grouped simply, there are three kinds of self-knowledge and two actions that use them.
+
+<figure>
+  <MetacognitionParts />
+  <figcaption>The five parts of machine metacognition: 3 kinds of self-knowledge, 2 loop steps.</figcaption>
+</figure>
+
+The first three parts describe what the system knows about itself: what it is good at, how it works, and which approach fits which problem. The last two are the Monitor and Control steps from the loop above. The system checks how sure it is, adjusts its plan, and repeats until it is ready to answer or to say it cannot.
+
+## What changes when AI knows its limits
+
+A self-aware system is not just more polite about uncertainty. It behaves differently in ways people can use.
+
+- **It can say "I don't know" at the right time.** The survey gives a medical example: when evidence conflicts or key patient details are missing, a clinical AI should flag the case for a doctor instead of giving a confident but unsupported answer.
+- **Its confidence becomes useful information.** If a model's confidence reliably tracks whether it is right, you know when to trust it and when to check. Research cited in the survey found that a model with slightly lower accuracy but more honest confidence can lead to better decisions when a human and the AI work together.
+- **It spends effort where it is needed.** A model that can tell an easy question from a hard one does not have to think at full length about everything. One method that watched for the point where further reasoning stopped helping cut reasoning length by almost 35% with little loss in accuracy.
+- **It looks things up only when it has to.** Systems that search documents or the web (often called RAG) can use self-checks to decide whether they already know enough, which removes unnecessary searches.
+
+There is early evidence that this can be taught. Simply telling a model in its instructions that it has good self-assessment skills improved how honestly it expressed uncertainty. Training that rewards accurate self-assessment improved it further.
+
+## What is still unsolved
+
+The survey is clear that this field is early. Its authors conclude that current LLMs are not yet capable of reliable metacognition. Three open issues stand out.
+
+- **Measurement is inconsistent.** Studies use different tasks, different ways of asking for confidence, and different settings, so their results are hard to compare. A model can also be well calibrated in one subject and poorly calibrated in another.
+- **It may be imitation.** Some researchers argue that what looks like self-reflection is the model reproducing patterns of self-reflection from its training text. Whether that difference matters in practice is still debated.
+- **Self-awareness has risks.** A model that understands its own abilities could, in principle, misrepresent them during testing. People also tend to think less critically when they rely on an AI, which the survey calls "metacognitive laziness". Better AI self-checks do not remove the need for human judgment.
+
+## Closing thoughts
+
+There is a well-known line usually credited to Mark Twain:
+
+> "It ain't what you don't know that gets you into trouble. It's what you know for sure that just ain't so."
+
+It was used in *An Inconvenient Truth* and *The Big Short*, credited to Twain both times. There is no evidence that Twain said it. [Quote Investigator](https://quoteinvestigator.com/2018/11/18/know-trouble/) looked for it in the work of Twain and of the other humorists it gets credited to, and did not find it in any of them. So a quote about being confidently wrong has been confidently misattributed for decades, by people who were sure they knew where it came from.
+
+That is the fair way to see the AI problem. People get things wrong constantly, and we have built habits to deal with it: we say "I think", we double-check, we ask someone who knows more. The goal is not an AI that is never wrong. It is an AI that can tell when it might be wrong and says so, the way a careful colleague would. The last few years made models much better at answering. The next step is making them better at knowing when not to.
+
+In the five-part breakdown above, which part do you think is hardest to get right: judging uncertainty (Evaluate) or acting on it (Regulate)? I'd like to hear your view.
+
+## Sources
+
+- Gabrielle Kaili-May Liu, Areeb Gani, Jacqueline Lu, Jordan Thomas, Mark Steyvers, Arman Cohan. [Metacognition in LLMs: Foundations, Progress, and Opportunities](https://arxiv.org/abs/2607.11881). Yale University and University of California, Irvine, July 2026. Reading list: [yale-nlp/LLM-Metacognition](https://github.com/yale-nlp/LLM-Metacognition).
+- Justin Kruger and David Dunning. [Unskilled and unaware of it](https://psycnet.apa.org/record/1999-15054-002). *Journal of Personality and Social Psychology*, 1999.
+- [Mata v. Avianca sanctions order](https://www.nhd.uscourts.gov/sites/default/files/pdf/Mata-v-Avianca-sanctions-order.PDF), US District Court, Southern District of New York, 2023.
+- BBC News. [Glue pizza and eat rocks: Google AI search errors go viral](https://www.bbc.com/news/articles/cd11gzejgz4o), May 2024.
+- BBC Travel. [Airline held liable for its chatbot giving passenger bad advice](https://www.bbc.com/travel/article/20240222-air-canada-chatbot-misinformation-what-travellers-should-know), February 2024.
+- Quote Investigator. [It ain't what you don't know that gets you into trouble](https://quoteinvestigator.com/2018/11/18/know-trouble/), 2018.
+- Confucius, *Analects* 2.17, trans. James Legge, [Project Gutenberg](https://gutenberg.org/files/4094/4094-h/4094-h.htm).

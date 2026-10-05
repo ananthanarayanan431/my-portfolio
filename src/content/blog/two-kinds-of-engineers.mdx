@@ -1,0 +1,60 @@
+---
+title: 'Two Kinds of Engineers in 2026'
+description: 'AI will do everything, or AI can do a lot and I can now do things I could not before. The difference between those two sentences decides whether you keep finding problems worth solving.'
+pubDate: 2026-10-05
+tags: ['AI', 'Career', 'Engineering', 'RAG', 'Agents']
+---
+
+There are two kinds of engineers in 2026.
+
+The first kind says: *"AI will do everything. Why should I learn anything?"*
+
+The second kind says: *"AI can do a lot. What can I do with it now that I couldn't do before?"*
+
+For a long time, I was the first kind. Both groups use the same tools, and they end up in very different places. Here is why I think the second group is ahead.
+
+## New tools create new problems
+
+Every coding agent, RAG system, or AI harness that grows runs into problems that did not exist two years ago.
+
+Take cost. The price gap between models is huge. One 2026 engineering guide puts the spread between the cheapest usable model and a frontier model at roughly 100x. That is why **model routing** exists: send easy requests to a small model and escalate only the hard ones. The [RouteLLM paper](https://arxiv.org/abs/2406.18665) reported up to 85% cost savings on the MT-Bench benchmark while keeping 95% of GPT-4's quality. That is a benchmark result, not a guarantee for your traffic, which brings us to the second problem.
+
+Routing to a cheaper model can quietly make answers worse, and nothing on your cost dashboard shows it. The usual fix is an **evaluation gate**: a set of 50 to 500 representative test cases that must pass before a routing change ships. Inference cost, latency, routing and evaluation are all jobs that someone has to do, and few people know how to do them well.
+
+## You only see those problems by building
+
+If you decide AI will do everything, you stop building. If you stop building, you never run into the problems companies are hiring for.
+
+Most of what I know came from things failing in ways I did not expect:
+
+- **Retrieval returning the wrong chunks.** When a RAG answer is wrong, the instinct is to blame the model. Often the model did exactly what it was told, and retrieval handed it the wrong evidence. A policy document split mid-section can leave out the one paragraph with the actual dollar amounts, and the model answers honestly from incomplete context ([a good walkthrough from AWS](https://dev.to/aws/why-rag-gives-wrong-answers-and-how-to-fix-retrieval-failures-gbj)).
+- **An agent stuck in a loop.** Agentic systems add failure modes that classic RAG does not have, such as retrieval thrash, tool-call storms, and context bloat ([Towards Data Science](https://towardsdatascience.com/agentic-rag-failure-modes-retrieval-thrash-tool-storms-and-context-bloat-and-how-to-spot-them-early/)).
+- **A task queue backing up.** Plain old infrastructure, now with LLM calls that take seconds instead of milliseconds.
+
+None of that would have happened if I had kept assuming the model would handle it.
+
+## The demand for help is already here
+
+The hiring data points the same way. Lightcast's Global AI Skills Outlook reports AI-skill job postings up 109% from 2024 to 2025. LinkedIn's 2026 Jobs on the Rise ranked AI Engineer as the fastest-growing job title in the US. PwC's 2025 analysis found a 56% wage premium for roles that need AI skills.
+
+The more interesting number is about trust. In the Stack Overflow 2025 survey, 84% of developers said they use or plan to use AI tools, but only 29% trust the output, down from the year before. Hiring guides now say the strongest signal of real LLM experience is whether you can walk through an evaluation you designed.
+
+That gap between "everyone uses it" and "few trust it" is where the work is. And you do not need a job title to step into it. Many people still pay for weaker tools, or use Claude Code at a fraction of what it can do. Teaching them, setting up their workflows, and building internal tools for them are services people pay for today.
+
+## What the belief costs you
+
+If you believe AI will do all the work, and you also do not have enough money, the next question comes quickly: *"What am I supposed to do with my days?"*
+
+That belief does not only cost you opportunities. It takes away your reason to get up and work on something.
+
+What changed for me was going back to building. I now build LangGraph agents and RAG pipelines every day, and I learn something new each time one of them breaks.
+
+## The pessimist has a prediction
+
+Maybe AI will do most of this work in 20 years. Nobody knows.
+
+What you can control is the next few months: what you build, what you learn, and which problems you notice along the way.
+
+The pessimist has a prediction. The optimist has a list of problems to work on.
+
+**Which problem have you hit while building with AI that nobody warned you about?** Email me at [me@ananthanarayanan.com](mailto:me@ananthanarayanan.com). Even one line is fine, no need to overthink it. I read every email and will reply to each one.

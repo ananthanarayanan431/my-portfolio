@@ -1,0 +1,150 @@
+---
+title: 'Write Like an Aircraft Manual: ASD-STE100 for LLMs'
+description: 'A 1980s aircraft-maintenance standard is now a one-line fix for wordy model output. What it is, why it works, and what it costs.'
+pubDate: 2026-10-07
+tags: ['AI', 'LLMs', 'Prompting', 'Technical Writing']
+---
+
+import BeforeAfter from '../../assets/blog/simplified-technical-english/before-after.svg';
+import Timeline from '../../assets/blog/simplified-technical-english/timeline.svg';
+import TwoUses from '../../assets/blog/simplified-technical-english/two-uses.svg';
+import FactLoss from '../../assets/blog/simplified-technical-english/fact-loss.svg';
+
+## One line that changed how I read model output
+
+On 2 October 2026, Andrej Karpathy posted on X that people will spend much more time trying to understand what language models write. His first tip was odd: ask the model to explain things in **ASD-STE100**, a controlled form of English made for aircraft maintenance manuals.
+
+That sounds like a joke. It is not. The idea had already been spreading among developers for two months, and his post made it famous. This post explains where the standard comes from, why it helps with LLMs, and where it fails. It also gives you a prompt you can use today.
+
+<figure>
+  <BeforeAfter />
+  <figcaption>The same instruction in normal English and in Simplified Technical English.</figcaption>
+</figure>
+
+## What ASD-STE100 is
+
+ASD-STE100 is also called Simplified Technical English, or STE. It was written so that a maintenance manual cannot be misread, even by a mechanic who does not speak English as a first language. In aircraft maintenance, a misread step can lead to an accident.
+
+The idea came from the airlines. They said that most of their staff were not native English speakers, and the manuals were written by manufacturers in the US, the UK, and the rest of Europe. Long sentences and words with several meanings caused errors.
+
+<figure>
+  <Timeline />
+  <figcaption>From a 1970s manual standard to a 2026 prompting trick.</figcaption>
+</figure>
+
+The current version is **Issue 9, January 2025**. The standards body, ASD in Brussels, gives it away for free on [asd-ste100.org](https://www.asd-ste100.org/about_STE.html). It has two parts:
+
+- **53 writing rules in 9 sections.** They cover word choice, grammar, sentence structure, and style.
+- **A controlled dictionary.** It holds about 900 approved words and about 1,200 words that are not approved, each with a replacement.
+
+### The rules that matter most
+
+| Rule                  | What it says                                                          |
+| --------------------- | --------------------------------------------------------------------- |
+| Sentence length       | At most 20 words in a procedure. At most 25 in a description.         |
+| One instruction       | Each sentence gives one instruction.                                  |
+| Voice and tense       | Use active voice and simple tenses.                                   |
+| Paragraphs            | One topic. At most six sentences.                                     |
+| One word, one meaning | Each word has one meaning and one part of speech.                     |
+| No dropped words      | Do not remove articles or verbs to make a sentence shorter.           |
+
+The dictionary rule is the strangest one. "Test" is approved only as a noun, so you can *do a test*, but you cannot *test* something. "Follow" means only "come after", so you cannot write "follow the safety instructions". You write "obey the safety instructions". Even English words that look simple get one narrow job.
+
+## How it became a prompting trick
+
+The path from manuals to chatbots was short.
+
+1. **Late July 2026.** A developer on X asked Claude to please use plain English. Andrew Carr replied with one line: "only report to me in ASD-STE100 Simplified Technical English". Pieter Levels saved the same instruction to Claude's memory to stop its writing from getting longer and longer.
+2. **August 2026.** GitHub skills and Hacker News threads followed. The team at GattyWorks added the rule to the agent-instruction files of 19 repos.
+3. **2 October 2026.** Karpathy posted. He said models know the standard well, and that its "heavy constraints on clean writing style" give text he finds "a lot more readable". Because the standard is strict, he sometimes asks for "80% of the way to ASD-STE100".
+
+His post did not stop at writing. He listed four ways to read model output, each one "even better" than the last: controlled writing, diagrams, interactive HTML pages, and custom explainer videos. His point was that as models do more of the work, our job moves up to oversight and understanding. ([Search Engine Journal](https://www.searchenginejournal.com/karpathy-llm-aircraft-manual-writing/591813/) has a good summary.)
+
+## Two different uses
+
+People mix up two uses of STE. They have different readers and different goals.
+
+<figure>
+  <TwoUses />
+  <figcaption>Same standard, different reader, different risk.</figcaption>
+</figure>
+
+**A. Output style.** You ask the model to answer *you* in STE. The reader is a person who has to check the answer. This is Karpathy's use.
+
+**B. Agent-facing text.** You write system prompts, tool descriptions, and error messages in STE. The reader is another agent. The open-source [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) targets this use and includes a linter.
+
+Use B is the one I find most interesting. An agent that reads a tool description cannot ask the author what they meant. A mechanic cannot phone the person who wrote the manual either. It is the same problem, and the same fix applies. If you build multi-agent systems, every hand-off between agents is a place where a vague sentence can turn into a wrong action.
+
+## Why it works
+
+- **The model already knows the standard.** One line in a system prompt is enough. You do not need to paste 53 rules.
+- **The rules can be counted.** "Write clearly" is an opinion. "Use at most 20 words in a procedure sentence" is a check that a script can run.
+- **It removes hedging and synonym switching.** GattyWorks gives an example: an agent writes "verified", "validated", and "confirmed" for what may be one single check. A reader then has to guess if these are three checks or one. STE uses one word for one thing.
+
+## What it costs
+
+Now the part that matters most. Short text is not the same as good text.
+
+<figure>
+  <FactLoss />
+  <figcaption>The strict instruction lost five times more code-specific facts than the loose one.</figcaption>
+</figure>
+
+Lucian Ghinda tested this in August 2026 with four real code samples. A loose "Simple Technical English" instruction cut Claude's average sentence from about 18 words to 9 or 10. It lost 8.5% of the code-specific facts. The full ASD-STE100 instruction lost **46.8%**. Codex was already terse, and both instructions made its output worse.
+
+It is a small test. Still, it matches Karpathy's "80%". The strict version makes text shorter by throwing out content you needed.
+
+Other results are mixed:
+
+| Source                                      | Finding                                                                                                                                   |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| StashBase (Oct 2026, Opus 5.5)              | Sentences got 35–40% shorter, but answers did not. No facts were lost on plain prose. "80%", "Simple Technical English", and the full name gave almost the same output. |
+| AminBlg/SimpleEnglish benchmark             | 78% fewer rule violations. The author notes this measures rule-following, not readability.                                                |
+
+There are four more limits.
+
+- **It is not real STE.** The model does not have the dictionary, so it guesses which words are approved. Axiom Verity [argues](https://axiom-verity.com/ste/guides/llm-prompt-for-simplified-technical-english) that true compliance needs a dictionary lookup *before* the model call. Even then, a lookup cannot catch a wrong *meaning*: "follow" passes the list, but not in the sense of "obey". You get STE-flavored English, not STE.
+- **Domain terms get lost.** The dictionary has no words for software ideas, so strict STE explains them away. This is why people add "keep product names and domain terms as they are".
+- **It flattens voice.** It suits explanations, status reports, and error messages. It is a poor fit for introductions, posts, or marketing copy. The standard itself was never meant for creative writing.
+- **The standards body does not endorse it.** The STEMG white paper (June 2026) says AI text can look like STE without complying. It also says the standard takes priority and a human stays responsible.
+
+## A prompt you can use
+
+This is my own wording. It keeps the benefits and guards against the 46.8% problem:
+
+```text
+Explain this about 80% of the way to ASD-STE100.
+Use short sentences, active voice, and one term per concept.
+Keep code names and domain terms unchanged.
+Keep every condition, number, and exception.
+```
+
+The last two lines do the real work. They tell the model which things it may not simplify.
+
+For agent-facing text, add a check at the end. Ask a second model, or a linter, to compare the rewritten text with the original and list any condition, number, or exception that went missing.
+
+## When to use it
+
+- **Use it** for explanations of code, status reports, error messages, and tool descriptions.
+- **Be careful** with anything where a small detail carries the meaning: legal text, security notes, API contracts.
+- **Do not use it** for posts, introductions, or anything where your voice matters.
+
+## Closing thoughts
+
+Technical writers spent decades turning "write clearly" into rules that can be counted and checked. That work is what makes the trick repeatable. It helps a tired mechanic, a non-native reader, and a language model for the same reason: it leaves less room to guess.
+
+So next time a model gives you three paragraphs where one sentence would do, ask for 80% of the way to ASD-STE100. Then check what it left out.
+
+Have you tried this on your own prompts or agent instructions? I would like to know if you saw the same trade-off.
+
+## Sources
+
+- ASD-STE100. [About STE](https://www.asd-ste100.org/about_STE.html) and [FAQ](https://asd-ste100.org/STE_faq.html). Issue 9, January 2025.
+- Kruno Golubić. [ASD-STE100: What It Is and What It Has to Do with LLMs](https://kgolubic.com/posts/asd-ste100-and-llms/). October 2026.
+- Matt G. Southern. [Make LLMs Write Like An Aircraft Manual](https://www.searchenginejournal.com/karpathy-llm-aircraft-manual-writing/591813/). Search Engine Journal, October 2026.
+- Axiom Verity. [LLM Prompt for ASD-STE100: What Actually Works](https://axiom-verity.com/ste/guides/llm-prompt-for-simplified-technical-english).
+- Lucian Ghinda. "Explain to me in Simple Technical English". August 2026.
+- StashBase. "ASD-STE100 in Claude: CLAUDE.md, Output Style or Skill?". October 2026.
+- GattyWorks. "How we made AI agents write in simplified technical English".
+- [danyuchn/asd-ste100-skill](https://github.com/danyuchn/asd-ste100-skill) on GitHub.
+- ASD-STEMG. White paper on ASD-STE100 and AI. June 2026.

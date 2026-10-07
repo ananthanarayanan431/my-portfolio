@@ -122,4 +122,10 @@ const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
     padding: 1rem;
     overflow-x: auto;
   }
+  .prose-custom :global(pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0.875rem;
+  }
 </style>

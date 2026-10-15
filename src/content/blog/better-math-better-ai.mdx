@@ -1,0 +1,126 @@
+---
+title: 'Better Math = Better AI?'
+description: 'OpenAI just released 722 math papers written by an internal model. What was claimed, how much is verified, and whether AI-discovered math could be what builds the next, better AI.'
+pubDate: 2026-10-15
+tags: ['AI', 'Math', 'OpenAI', 'Research']
+---
+
+import { Image } from 'astro:assets';
+import aiGrowsFromMath from '../../assets/blog/better-math-better-ai/ai-grows-from-math.png';
+
+We've been using AI to solve math problems for years.
+
+But what if AI could actually *discover* new mathematics, the kind that helps us build even better AI?
+
+That's where things seem to be heading.
+
+<figure>
+  <Image src={aiGrowsFromMath} alt="A hand-drawn tree whose branches end in neural-network nodes and whose roots form the symbols ∫, Σ, ∞, π and ∂, captioned 'AI grows from math.'" />
+  <figcaption>AI grows from math.</figcaption>
+</figure>
+
+## What OpenAI released
+
+On October 6, 2026, OpenAI [published a large set of new mathematical results](https://openai.com/index/sharing-ai-progress-in-mathematics/) produced by an unreleased internal model.
+
+| What | Count |
+| --- | --- |
+| Open problems given to the model | about **4,000** |
+| Manuscripts released | **722** (719 after 3 were withdrawn) |
+| Distinct results | **372**, across 17 areas of math |
+| Average compute per result | about **3 hours of ChatGPT Pro thinking** |
+
+According to OpenAI's [GitHub README](https://github.com/openai/math), this started as *model evaluation*. Their usual math benchmarks had become too easy for the model, so they began testing it on real open research problems instead.
+
+The 3 hours is the striking part. A month earlier, OpenAI's [Navier–Stokes result](https://openai.com/index/navier-stokes-solution/) needed about 10,000 agents running for 88 hours. Now a single result costs a few hours of thinking. The cost of this kind of math is dropping fast.
+
+## Three of the problems
+
+These aren't your typical math problems. Some have challenged mathematicians for decades.
+
+### 1. The irrationality exponent of π
+
+Every irrational number can be approximated by fractions, like 22/7 or 355/113 for π. The *irrationality exponent* measures how well that works. Most numbers have exponent exactly 2. For π, the best proven upper bound was still above 7.
+
+**The model claims π's exponent is exactly 2**, which means π is no easier to approximate than a typical number. This result doesn't have a Lean proof yet.
+
+### 2. Kaplansky's direct finiteness conjecture
+
+In a group algebra, if *ab* = 1, must *ba* = 1 too? Irving Kaplansky conjectured in the 1960s that the answer is always yes. He proved it for fields of characteristic zero, but it stayed open otherwise.
+
+**The model claims a counterexample**, which means the conjecture is false. The main theorem has a Lean proof.
+
+### 3. Zero-free regions of the Riemann zeta function
+
+The Riemann hypothesis says every non-trivial zero of the zeta function has real part 1/2. We're nowhere close to proving that.
+
+**The model claims there are no zeros where Re(s) > 7/8**, for zeta and every Dirichlet L-function. It's not the Riemann hypothesis, but no fixed zero-free strip like this was known before. The result has a Lean proof.
+
+## How do we know it's correct?
+
+Anyone can write a 40-page paper that *looks* like a proof. OpenAI took three approaches.
+
+### 1. Lean for proof verification
+
+Many proofs were translated into [Lean](https://lean-lang.org/), a formal proof assistant. A computer checks every logical step. If one step is wrong, the proof doesn't compile.
+
+### 2. Open research on GitHub
+
+Everything is in a public [GitHub repository](https://github.com/openai/math): the papers, the Lean proofs, 10 summaries of the model's reasoning, compute estimates, and the number of problems attempted. Anyone can read the papers and rerun the proof checks.
+
+### 3. Independent expert involvement
+
+OpenAI consulted the independent [Advisory Group on Mathematics and Artificial Intelligence](https://agmai.org/), hosted at the Institute for Advanced Study, on how to release the results. The group includes Fields Medalists such as Timothy Gowers and Martin Hairer.
+
+### The limits
+
+Not every result is verified:
+
+- **Only about 42%** of the main results have Lean proofs. OpenAI's README says *"some of the unformalized results could have issues."*
+- **Errors have already been found.** A day after the release, OpenAI withdrew 3 papers because of a sign error.
+- **Lean checks the proof, not the translation.** It confirms the code proves the statement written in code. It can't confirm that this statement matches the theorem the paper claims in English. A recent preprint found [exactly this kind of mismatch](https://arxiv.org/abs/2610.08144) in the Navier–Stokes formalization.
+
+So the right attitude is excitement with care, not blind belief.
+
+## Better Math = Better AI?
+
+Now, back to my original question.
+
+Mathematics is the foundation of machine learning:
+
+- **Gradient descent** is calculus.
+- **Attention** is linear algebra.
+- **Training** is optimization.
+- **Generalization** is probability and statistics.
+
+If AI can discover new mathematical ideas, some of them could improve the algorithms we use to train AI. And those better AI systems could then help discover even more mathematics.
+
+> Better AI → New Mathematics → Better AI → …
+
+This loop has already turned once. In 2025, Google DeepMind's **AlphaEvolve**, powered by Gemini, found a better way to split up a matrix multiplication. That made a key kernel [**23% faster**](https://deepmind.google/blog/alphaevolve-a-gemini-powered-coding-agent-for-designing-advanced-algorithms/) and cut **Gemini's training time by about 1%**. Gemini helped speed up its own training.
+
+### The result to watch: matrix multiplication
+
+Almost every step of training and running a neural network is matrix multiplication. So of all 372 results, the one closest to AI is this: **matrix multiplication with exponent ω ≤ 9/4**.
+
+The exponent ω measures how fast you can multiply two n×n matrices. The schoolbook method takes n³ steps. Decades of human work brought the bound down to about 2.371. The model claims **2.25**, and the result has a Lean proof.
+
+One honest caveat: algorithms behind bounds like this are only faster for matrices far larger than anything we use in practice. So it won't speed up next year's training run. But it changes what we know is possible, and that's usually where practical improvements start.
+
+### What could slow the loop down
+
+- **Verification.** A model can produce hundreds of results in weeks. Checking them may take mathematicians years. You can't build on a result nobody trusts.
+- **Understanding.** Progress usually comes from new *ideas* people can reuse, not only from a "true" stamp. As Terence Tao put it, open problems are lighthouses: the exploration matters, not just the answer.
+- **Access.** The model behind these results is unreleased. If only a few labs can run it, the loop stays inside those labs.
+
+## A new kind of collaborator
+
+For centuries, mathematical discovery has been driven by human intelligence.
+
+Now AI is starting to take part in that process. It isn't replacing mathematicians. Someone still has to choose the questions, check the statements, and turn proofs into understanding. But AI is becoming a real contributor.
+
+Maybe the next big breakthrough in AI won't come from a bigger model or more GPUs.
+
+Maybe it'll come from a mathematical discovery made with the help of AI.
+
+What do you think?

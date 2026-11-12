@@ -1,42 +1,49 @@
 ---
 title: 'DevFest Hyderabad 2026'
-description: '3,000+ developers in one convention hall on a Saturday, one question I kept asking everyone, and a good day with the people I work with.'
+description: '3,000+ developers in one convention hall, workshops on agents and graphs, an AI digital twin of a minister, and the one question I asked everyone: what does the future of software engineering look like?'
 pubDate: 2026-10-25
-tags: ['Community', 'Events']
+tags: ['Community', 'Events', 'AI']
 ---
 
 import { Image } from 'astro:assets';
 import openingStage from '../../assets/blog/devfest-hyderabad-2026/opening-stage.jpg';
 import aiEconomyTalk from '../../assets/blog/devfest-hyderabad-2026/ai-economy-talk.jpg';
-import hallwayConversations from '../../assets/blog/devfest-hyderabad-2026/hallway-conversations.jpg';
 import photoBooth from '../../assets/blog/devfest-hyderabad-2026/photo-booth.jpg';
-import theCrew from '../../assets/blog/devfest-hyderabad-2026/the-crew.jpg';
 
 3,000+ developers in one convention hall on a Saturday.
 
 That was DevFest Hyderabad 2026, and it easily became my favourite day of the month.
 
+## What DevFest Hyderabad actually is
+
+DevFest is the yearly flagship event that Google Developer Groups run in cities around the world. Hyderabad's edition is organised by [GDG Hyderabad](https://gdghyd.in/), a community that has been around for more than 13 years and is one of the most active developer networks in the country.
+
+This year it ran on **24 October 2026** at the JRC Convention in Film Nagar: one full day, 8:30 AM to 6 PM, with keynotes, four tracks, hands-on workshops and 35+ speakers. Tickets sold out before the day.
+
 <figure>
   <Image src={openingStage} alt="DevFest Hyderabad 2026 opening slide on the main stage, 24 October, JRC Convention" />
-  <figcaption>24 October, JRC Convention, Hyderabad.</figcaption>
+  <figcaption>The opening slide. Workshops, keynotes, talks, swag and "+ More".</figcaption>
 </figure>
 
-## Workshops, after the queue
+The event page warned that "the queue for badges is real." It was not lying. 😅
 
-The day started the way every big event starts: a long wait in the registration queue. 😅
+## Agents, graphs and GraphRAG
 
-Once I got in, I spent most of the day in tech workshops covering **Google ADK**, **Neo4j** and **GraphRAG**.
+Once I got in, I spent most of my time in the workshops. Three topics stood out, and they fit together better than I expected.
 
-<figure>
-  <Image src={aiEconomyTalk} alt="A speaker presenting a slide about AI's role in Telangana's economy" />
-  <figcaption>One of the sessions from the main hall.</figcaption>
-</figure>
+**Google ADK (Agent Development Kit)** is Google's open-source framework for building AI agents. Instead of one giant prompt, you define agents with their own tools and instructions, and compose them into multi-agent systems that hand work to each other.
 
-In between, I spoke with a lot of developers about what each of us is building, and met aspiring software engineers from different colleges.
+**Neo4j** is a graph database. Rather than rows and tables, it stores data as nodes and the relationships between them, so questions like "who is connected to what, and how?" become simple queries instead of painful joins.
+
+**GraphRAG** is where the two meet. Classic RAG chops documents into chunks, embeds them and retrieves whichever chunks look most similar to the question. That works until the answer depends on how facts *connect* across documents. GraphRAG builds a knowledge graph of entities and relationships first, then retrieves along that graph, so the model gets context that is linked, not just similar.
+
+Put them together and you get a pretty clear picture of where a lot of applied AI is heading: agents that reason over structured knowledge rather than over a pile of text snippets.
 
 ## The one question I kept asking
 
-I asked almost every developer I met the same question:
+Between sessions, I spoke with a lot of developers about what each of us is building, and met aspiring software engineers from different colleges.
+
+I asked almost every one of them the same question:
 
 > *"What do you think the future of software engineering looks like?"*
 
@@ -44,35 +51,45 @@ Most of them were optimistic. Their answers were roughly the same:
 
 **The job isn't going away, but the way we work has already changed.**
 
-## Conversations worth the trip
-
-We got the chance to discuss our idea with **Srini Chilukuri**, founder of TensorGo, and I'm really thankful for the insights and guidance he gave us.
-
-We also got to speak with **Karthik Padmanabhan**, and had an insightful conversation with **Shrreya Behll** about self-hosting different LLMs.
+The stage seemed to agree. One of the talks in the main hall framed AI not as a threat to jobs but as an economic engine, with a slide on how AI fits into Telangana's goal of becoming a $1 trillion economy by 2034, and a line about the potential for 5 lakh+ new AI jobs.
 
 <figure>
-  <Image src={hallwayConversations} alt="Four people standing together in the convention centre lobby" />
-  <figcaption>Most of the good stuff happened between sessions.</figcaption>
+  <Image src={aiEconomyTalk} alt="A speaker presenting a slide titled 'Incorporating AI within economy is key towards the $1Tn Telangana Rising vision (2034)'" />
+  <figcaption>"Incorporating AI within economy is key towards the $1Tn Telangana Rising vision."</figcaption>
 </figure>
+
+Telangana's IT minister, D. Sridhar Babu, was there too. The headline moment was an **AI-powered digital twin of the minister**, built on TensorGo's HumAIn platform, answering questions from attendees in both English and Telugu. Watching a room full of developers ask questions to an avatar of a minister is a very 2026 sentence.
+
+## Conversations worth the trip
+
+Honestly, the conversations were the best part of the day.
+
+**Srini Chilukuri** is the founder and CEO of [TensorGo](https://tensorgo.com/), the same company behind that digital twin. He co-founded it in Hyderabad in August 2023 with Lakshmi Chilukuri, and it builds HumAIn, which they describe as "pre-AGI" AI teammates: agents that join meetings, reason and carry out work in areas like hiring, sales and support. TensorGo has been named a Gartner Cool Vendor and made the nasscom Emerge 50 list. We got the chance to pitch our own idea to him, and I'm really thankful for the insights and guidance he gave us. Getting product feedback from someone who has built and scaled multiple companies is worth more than a dozen talks.
+
+We also got to speak with **Karthik Padmanabhan**, who leads Developer Relations at Google India. He has spent 34+ years in the tech industry across Wipro, Microsoft, IBM and now Google, and a big part of his work is growing exactly the kind of developer community that fills a hall like this.
+
+And we had an insightful conversation with **Shrreya Behll** about self-hosting different LLMs. Shrreya is a Senior ML Research Engineer at Qualcomm and an Imperial College London alum, working on production ML for embedded and edge environments. That made her the perfect person to talk to about running open-weight models on your own hardware: which models are worth it, what the trade-offs look like, and when it makes sense not to just call an API.
 
 ## The best part
 
-Honestly, the best part of the day was spending it with **Deepak Vaduganambi** and **Virender Garg**.
+The best part of the day was spending it with **Deepak Vaduganambi** and **Virender Garg**.
 
 We don't get many full days together outside work. 😇 So a Saturday of meeting people, arguing about ideas and eating conference lunch together was a good one.
 
 <figure>
-  <Image src={photoBooth} alt="Three attendees posing inside the DevFest Hyderabad 2026 photo booth frame" />
-  <figcaption>Obligatory photo booth picture.</figcaption>
+  <Image src={photoBooth} alt="Three attendees posing inside the DevFest Hyderabad 2026 'Be Cloud' photo booth frame" />
+  <figcaption>The obligatory photo booth picture.</figcaption>
 </figure>
 
-<figure>
-  <Image src={theCrew} alt="A group selfie of four attendees in the convention hall" />
-  <figcaption>New faces, good conversations.</figcaption>
-</figure>
+## What I took home
+
+- **Agents + graphs is the stack to learn next.** ADK for orchestration, a graph for knowledge, GraphRAG for retrieval.
+- **The people building in AI are mostly optimistic.** Not about the job staying the same, but about it changing in a direction worth being part of.
+- **Self-hosting LLMs is no longer a niche hobby.** It is a real engineering choice with real trade-offs.
+- **Show up in person.** Every useful insight from the day came from a conversation, not a slide.
 
 ## Thank you, GDG Hyderabad
 
-Thank you to Google Developer Groups Hyderabad, Aarshad Devani and every volunteer who made a day this size run smoothly.
+Thank you to Google Developer Groups Hyderabad, to organiser [Aarshad Devani](https://in.linkedin.com/in/aarshaddevani), and to every volunteer who made a day this size run smoothly.
 
 Already waiting for the next community event!

@@ -1,0 +1,131 @@
+---
+title: 'Do You Want to See Your Future?'
+description: "Anthropic's economists modelled what AI could do to jobs, salaries and careers by 2030. Three scenarios, one clear signal for anyone whose work happens on a laptop: own something."
+pubDate: 2026-11-14
+tags: ['AI', 'Economics', 'Career']
+---
+
+import { Image } from 'astro:assets';
+import gdpByScenario from '../../assets/blog/ai-economic-scenarios-2030/gdp-by-scenario.jpg';
+import jobReallocation from '../../assets/blog/ai-economic-scenarios-2030/job-reallocation.jpg';
+import unemployment from '../../assets/blog/ai-economic-scenarios-2030/unemployment.jpg';
+import wages from '../../assets/blog/ai-economic-scenarios-2030/wages.jpg';
+import laborVsCapital from '../../assets/blog/ai-economic-scenarios-2030/labor-vs-capital.jpg';
+
+Do you want to see your future?
+
+Anthropic's Economics team built a model of what could happen to jobs, salaries and careers as AI keeps getting better. They published it as an interactive [scenario explorer](https://www.anthropic.com/institute/econ-scenarios), backed by a technical report, [Economic Scenarios for Transformative AI](https://www-cdn.anthropic.com/files/4zrzovbb/website/cf58f84d46a4a76bf5a5b039ac695fba6b80041c.pdf) (Korinek et al., 2026).
+
+If most of your work happens on a laptop, this one's for you.
+
+## The economy is made of tasks
+
+The model starts with a simple idea: every job is a bundle of tasks.
+
+Their example is a nurse. In one shift she triages patients, draws blood, charts vitals, orders supplies for the ward and talks to patients about their diagnoses. AI can affect each of those tasks in one of four ways:
+
+- **Unchanged.** AI can't bathe a patient.
+- **Augmented.** AI helps her draft discharge instructions or plan the shift's care schedule, faster and better.
+- **Automated.** AI charts the vitals or orders the supplies by itself.
+- **New.** Someone now has to check how well the AI triages patients, or review an AI-proposed care plan.
+
+Add up every instance of every task done in the US, by people and by the software they use, and you get the US economy: more than $30 trillion a year. So the real question is how AI changes all those tasks, how many new ones it creates, and how fast people and companies adopt it.
+
+## Three possible futures by 2030
+
+The team mapped three scenarios.
+
+**Modest.** AI helps, but life looks fairly familiar. Its impact is something like the internet's: real gains, inside the historical norm, arriving gradually. The economy is about **1.6% bigger** than it would be without AI.
+
+**Substantial.** AI can handle roughly half of knowledge work (writing, coding, analysis) by 2030, most of it autonomously. It isn't used for all of that work yet, but the economy grows at about twice its normal rate. GDP is about **8% bigger**, but knowledge worker wages are almost unchanged.
+
+**Extreme.** AI is better than people at most knowledge work and does nearly all of it by itself, creating almost no new knowledge tasks for humans. This probably needs recursively self-improving AI and very fast adoption. Growth reaches about 15% a year, enough to double the economy every 4.5 years. The economy is about **32% bigger**, but knowledge workers are paid **over 10% less**, and **almost 1 in 5** is unemployed.
+
+<figure>
+  <Image src={gdpByScenario} alt="Chart of US GDP in 2030 by scenario: Modest +1.6% ($34.1T), Substantial +8.3% ($36.3T), Extreme +32.4% ($44.4T)" />
+  <figcaption>US GDP in 2030 by scenario, in 2025 prices. AI grows the economy in every future. Source: Anthropic.</figcaption>
+</figure>
+
+When Anthropic surveyed more than 10,000 Americans about what they expect from AI, the typical answer landed close to the substantial scenario. About 10% of people answered in a way that matched the extreme one.
+
+## What it means for knowledge workers
+
+GDP growth is the headline, but the interesting part is who gets that growth.
+
+### More people will have to switch careers
+
+In the substantial and extreme scenarios, a lot of knowledge work gets automated, and some coders and call-centre agents have to move into jobs like electrician or nurse that AI touches less.
+
+Changing occupations is hard. You may need new skills, you may not want to switch, and even then it takes time to land the new job. The more switching a scenario needs, the more people are between jobs at any moment.
+
+<figure>
+  <Image src={jobReallocation} alt="Flow chart of where workers are in 2030 in the substantial scenario: 62.2% knowledge workers in 2026, 59.7% still there in 2030, 2.5% displaced, 1.8% crossed over to other work, 0.7% still need to move" />
+  <figcaption>Where workers end up by 2030 in the substantial scenario. Source: Anthropic.</figcaption>
+</figure>
+
+### Unemployment in knowledge work rises
+
+In the modest and substantial scenarios, unemployment stays within ranges we have seen before. In the extreme scenario, unemployment among knowledge workers climbs to **17.9%** by 2030, while it actually falls for everyone else.
+
+<figure>
+  <Image src={unemployment} alt="Three line charts of unemployment from 2026 to 2030. Extreme scenario: knowledge workers rise to 17.9%, total 11.9%, other workers 3.9%" />
+  <figcaption>Unemployment rate by scenario. In the extreme case, almost 1 in 5 knowledge workers is out of work. Source: Anthropic.</figcaption>
+</figure>
+
+### Wages rise, just not for us
+
+Average wages go up in every scenario, but the increase lands outside knowledge work. If AI makes design and permitting faster, more buildings get built, and construction workers get paid more.
+
+For knowledge workers, wages are flat in the substantial scenario (**-0.3%**) and fall by **11.5%** in the extreme one. Other workers see **+33.6%**.
+
+<figure>
+  <Image src={wages} alt="Three line charts of pay by occupation group compared to an economy without AI. Extreme scenario: other workers +33.6%, average +9.7%, knowledge workers -11.5%" />
+  <figcaption>Pay compared with the same economy without AI. Source: Anthropic.</figcaption>
+</figure>
+
+## The pie grows, but owners take a bigger slice
+
+This is the finding I keep coming back to.
+
+Today, of every dollar the economy produces, about 60¢ goes to workers and 40¢ goes to capital: the businesses, machines and tools that do the work. When AI can do more tasks, capital becomes useful for more things, so a bigger share of each dollar flows to whoever owns it.
+
+- **Modest:** 59.4% to labour, 40.6% to capital.
+- **Substantial:** 56.1% to labour, 43.9% to capital.
+- **Extreme:** 45.2% to labour, **54.8% to capital**. Total labour income is barely changed, even though the economy is a third bigger.
+
+<figure>
+  <Image src={laborVsCapital} alt="Bar chart of how GDP is shared between workers and capital: Modest 59.4% labour, Substantial 56.1%, Extreme 45.2% labour and 54.8% capital" />
+  <figcaption>How GDP is split between workers and capital in 2030. Source: Anthropic.</figcaption>
+</figure>
+
+In both of the bigger scenarios, most of the extra income goes to people who own businesses and the tools doing the work. As Anthropic puts it, the challenge in that world is not growth. It is making sure the gains are broadly shared.
+
+## Why this matters in India
+
+The model is built on the US economy. But so much Indian IT, design and customer support work is done for American companies that what happens there reaches us too.
+
+If a US company's knowledge work gets cheaper to do with AI, the outsourced version of that work is the first place the pressure shows up. The roles the report calls out, coders and call-centre agents, are exactly the roles a huge part of our industry is built on.
+
+## The signal is clear: own something
+
+You don't need a perfect forecast to read the direction. In every scenario where AI matters a lot, the people who own things do better than the people who only sell their hours.
+
+The good news is that owning something has never been more accessible. One person with AI can now do what used to take a small team.
+
+Start small:
+
+- **Your own clients.** A freelance service you deliver end to end.
+- **Your own content.** A blog, a newsletter, a channel. Something that compounds.
+- **Your own service or product.** Even a tiny one that serves a single user well.
+
+Or get some skin in the game wherever you work: equity, ownership of a product line, a stake in the outcome rather than only a salary.
+
+## The future isn't decided yet
+
+Anthropic is careful to say this is a model, not a prophecy. It leaves out policy responses, business cycles and robots, and the reviewers argued both ways: some felt the extreme scenario is more of a thought experiment, others felt even the modest one understates what is already visible in the data.
+
+What 2030 looks like depends on what AI can do, how companies and workers choose to adopt it, and how the gains are shared. You can [try the explorer yourself](https://www.anthropic.com/institute/econ-scenarios), put in your own guesses about AI, and see the economy they imply.
+
+The way we work is changing. We need to change with it.
+
+**Which scenario do you think we're heading toward?**

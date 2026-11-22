@@ -1,0 +1,169 @@
+---
+title: 'Not Every AI Task Needs to Think Slow'
+description: 'Most production AI calls are decisions, not essays. What System One models like Jev are, what TypeSafe AI claims about them, what early users measured, and where an LLM is still the right tool.'
+pubDate: 2026-11-22
+tags: ['AI', 'LLMs', 'System One', 'AI Engineering']
+---
+
+import { Image } from 'astro:assets';
+import fastAndSlow from '../../assets/blog/system-one-models/fast-and-slow.png';
+import accuracyVsCost from '../../assets/blog/system-one-models/accuracy-vs-cost.png';
+
+What's 2 + 2?
+
+You answered instantly. Now try 17 × 18.
+
+You slowed down. (It's 306.) That gap between the two answers is what's driving a new class of AI models.
+
+<figure>
+  <Image src={fastAndSlow} alt="Comparison card titled 'Not every AI task needs to think slow'. System 2, LLMs: generates token by token, slower and more expensive, best for code and text. System 1, decision models: typed answer in one shot, can't answer outside your schema, a fraction of the cost and latency, best for classify, route, score." />
+  <figcaption>The whole post at a glance.</figcaption>
+</figure>
+
+## Two ways of thinking
+
+Daniel Kahneman's book [Thinking, Fast and Slow](https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/) (2011) made the idea famous:
+
+- **System 1** is fast, automatic and effortless. It answers 2 + 2.
+- **System 2** is slow, deliberate and expensive. It works out 17 × 18.
+
+You use both all day, and you rarely choose between them. Your brain sends each question to the cheaper system first and only calls the expensive one when it has to.
+
+## LLMs are System 2 machines
+
+A large language model writes its answer one token at a time, and each token depends on the ones before it. That is exactly what you want for code and writing, where the answer is long and every word matters.
+
+But most production AI calls aren't essays. They're decisions:
+
+- Classify this ticket.
+- Route that request.
+- Flag this transaction.
+- Score that lead.
+
+For each of these, the useful part of the answer is one word or one number. When you use an LLM, you still pay for the whole machine: you wait for it to generate text, you parse that text, you validate it, and you retry when it comes back in the wrong shape.
+
+## Using an LLM for those is overkill
+
+There is research behind this. In 2024, Martin Bucher and Marco Martini published [Fine-Tuned 'Small' LLMs (Still) Significantly Outperform Zero-Shot Generative AI Models in Text Classification](https://arxiv.org/abs/2406.08660). They compared GPT-3.5, GPT-4 and Claude Opus, prompted with no training examples, against small BERT-style models fine-tuned for the task. They ran four case studies: sentiment in news, stance in tweets, emotion in German political texts, and party positions on European integration.
+
+The small fine-tuned models won in all four. In the authors' words, model size and complexity are no substitute for application-specific training data.
+
+The lesson is older than LLMs: a model built for a decision tends to beat a general model that is asked to write about one. The catch has always been the work involved. You need labelled data, a training run and a model to host for every task.
+
+System 1 models try to remove that catch.
+
+## What a System 1 model is
+
+[Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev), from TypeSafe AI, was released in early access on 15 September 2026. TypeSafe calls it the first "System One" model. The name is TypeSafe's own and comes straight from Kahneman.
+
+The idea is state in, typed answer out. You send two things:
+
+- **The state:** the text (or image) to judge, such as a support ticket.
+- **The questions:** each with a fixed type and a plain-language instruction.
+
+There are a few question types. A *Choice* picks one label from your list. A *Score* returns a number on a scale you define. A *Noul* answers a yes/no question with a probability. Here is the ticket example from the image above, written as a request:
+
+```json
+{
+  "model": "jev-latest",
+  "state": "I've been trying to connect my Stripe account for 3 days and it keeps failing. I'm losing sales. Please help ASAP.",
+  "questions": {
+    "is_urgent": {
+      "type": "noul",
+      "instructions": "The message conveys urgency or time-sensitivity"
+    }
+  }
+}
+```
+
+What comes back is a number such as 0.94, not a sentence. There is no text generation at all, so the model can't answer outside your schema. There is nothing to parse and nothing to retry.
+
+## What TypeSafe claims
+
+These four points all come from TypeSafe's [launch post](https://typesafe.ai/blog/introducing-system-one-models-and-jev):
+
+- **Outputs are produced in parallel, not token by token.** Jev reads the state once and answers every question in a single pass.
+- **Responses take 70–500 ms.** TypeSafe compares that with 3 to 329 seconds for frontier LLMs.
+- **Input costs $0.042 per million tokens, and outputs are free.** That is $42 per billion tokens.
+- **Every answer comes with a calibrated probability.** TypeSafe trains for this with a method it calls Reinforcement Learning for Calibrated Decisions.
+
+<figure>
+  <Image src={accuracyVsCost} alt="Scatter chart of accuracy against cost per workflow on a log scale, averaged over four workflows. Jev sits near 68% accuracy at about $0.0004 per workflow, while OpenAI, Anthropic and Fireworks-hosted models with similar accuracy cost between $0.003 and $0.3." />
+  <figcaption>TypeSafe's own workflow evals: similar accuracy, about two orders of magnitude cheaper. Source: TypeSafe AI.</figcaption>
+</figure>
+
+## Why the confidence score matters most
+
+For automation, the last point is the important one.
+
+A model that's right 95% of the time but can't tell you when it's in the other 5% can't run unattended. Someone still has to check everything, because any answer could be one of the wrong ones.
+
+A calibrated model changes that. Calibrated means the number matches reality: of all the answers given at 0.9, about nine in ten are right. Now your code can act on the number:
+
+```python
+p = response.nouls["is_urgent"].noul
+
+if p > 0.9:
+    page_on_call(ticket)        # confident: act automatically
+elif p < 0.1:
+    add_to_queue(ticket)        # confident the other way
+else:
+    send_to_human(ticket)       # unsure: don't guess
+```
+
+The model handles the easy cases, and a person (or a bigger model) sees only the hard ones. Where you put the thresholds depends on the stakes. TypeSafe's [confidence docs](https://docs.typesafe.ai/confidence) suggest a higher bar for a destructive action than for a read-only one.
+
+## What independent users found
+
+The headline numbers are TypeSafe's, so it is worth looking at what others measured.
+
+**The real speedup is smaller than the headline.** TypeSafe's home page says 193.6× faster and 444.6× cheaper, and its own post says these are "on the higher end of real world gains". [InfoQ](https://www.infoq.com/news/2026/10/typesafe-ai-jev-released/) reports an analysis of 12,759 launch tweets that put user-reported speedups at a median of 7× and cost savings at a median of 30×. That is still a large gain, but it is not 200×.
+
+**"Can't hallucinate" needs a footnote.** Jev can't return an invalid type. It can still return a valid answer that is wrong. A yes that should have been a no fits the schema perfectly.
+
+**Calibration is a property of groups, not single answers.** TypeSafe's [docs](https://docs.typesafe.ai/concepts/system-one) say so directly: calibration is measured across many predictions and does not guarantee any individual answer.
+
+**The shape is fixed, the content isn't.** An analyst quoted by [TechTarget](https://www.techtarget.com/news/Jev-decision-model-touted-as-quicker-cheaper-LLM-alternative/856949/) pointed out that the format is deterministic but the same input can still give a slightly different answer or confidence on another run.
+
+**It has weak spots.** According to InfoQ, TypeSafe's documentation lists unreliable counting, arithmetic and date comparison, and advises keeping maths in code. So even a System 1 model should not be asked for 17 × 18.
+
+One more detail connects back to the study. Bucher and Martini's winners were fine-tuned on task data. Jev is not: the same weights serve every customer. Their paper supports the general idea that specialised models beat general ones at classification. It does not prove that Jev will beat a classifier trained on your own data. If you already have labelled examples, test both.
+
+## Smart if-statements
+
+My takeaway: think of these models as smart if-statements.
+
+A normal `if` needs a condition you can write in code. A smart `if` handles the conditions you can't: *is this message angry?*, *does this email ask for a refund?*, *is this tool call safe to run?* The answer comes back typed, with a probability, fast enough to sit inside a request.
+
+So the split looks like this:
+
+| The task | The tool |
+| --- | --- |
+| Write, explain, summarise, code | An LLM |
+| Classify, route, flag, score | A decision model |
+| Count, add, compare dates | Plain code |
+| A decision the model is unsure about | A person or a reasoning model |
+
+Jev is no longer the only option, either. A week after its launch, an open-weights alternative appeared, which I covered in [Contrastive Language Models, Explained](/blog/contrastive-language-models/).
+
+## Where to start
+
+You don't need to redesign anything. Three steps are enough:
+
+1. **List your LLM calls.** Mark each one where the output you actually use is a label, a yes/no or a number.
+2. **Pick the one with the most volume.** That is where latency and cost add up fastest.
+3. **Run both side by side on your own data.** Compare accuracy first, then speed and cost. Check whether the high-confidence answers really are right more often.
+
+Keep the LLM for generating text, and give the yes/no calls to a model built for them.
+
+**Which of your LLM calls is really just a classifier in disguise?**
+
+## Sources
+
+- [Thinking, Fast and Slow](https://www.penguinrandomhouse.com/books/89308/thinking-fast-and-slow-by-daniel-kahneman/) — Daniel Kahneman, 2011
+- [Fine-Tuned 'Small' LLMs (Still) Significantly Outperform Zero-Shot Generative AI Models in Text Classification](https://arxiv.org/abs/2406.08660) — Bucher & Martini, 2024
+- [Introducing System One Models & Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) — TypeSafe AI
+- [System One](https://docs.typesafe.ai/concepts/system-one), [Confidence](https://docs.typesafe.ai/confidence) and [Models](https://docs.typesafe.ai/models) — TypeSafe docs
+- [TypeSafe AI Releases Jev: a Decision-Only Model That Returns Typed Probabilities Instead of Text](https://www.infoq.com/news/2026/10/typesafe-ai-jev-released/) — InfoQ
+- [Jev decision model touted as quicker, cheaper LLM alternative](https://www.techtarget.com/news/Jev-decision-model-touted-as-quicker-cheaper-LLM-alternative/856949/) — TechTarget
+- [Building a Harness with Jev](https://www.langchain.com/blog/building-a-harness-with-jev) — LangChain

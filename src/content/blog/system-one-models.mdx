@@ -88,8 +88,8 @@ These four points all come from TypeSafe's [launch post](https://typesafe.ai/blo
 - **Every answer comes with a calibrated probability.** TypeSafe trains for this with a method it calls Reinforcement Learning for Calibrated Decisions.
 
 <figure>
-  <Image src={accuracyVsCost} alt="Scatter chart of accuracy against cost per workflow on a log scale, averaged over four workflows. Jev sits near 68% accuracy at about $0.0004 per workflow, while OpenAI, Anthropic and Fireworks-hosted models with similar accuracy cost between $0.003 and $0.3." />
-  <figcaption>TypeSafe's own workflow evals: similar accuracy, about two orders of magnitude cheaper. Source: TypeSafe AI.</figcaption>
+  <Image src={accuracyVsCost} alt="Scatter chart of accuracy against cost per workflow on a log scale, averaged over four workflows. Accuracy here means agreement with reference answers produced by two larger models, not independently verified correctness. Jev sits near 68% at about $0.0004 per workflow, while OpenAI, Anthropic and Fireworks-hosted models with similar scores cost between $0.003 and $0.3." />
+  <figcaption>TypeSafe's own workflow evals: similar scores at about two orders of magnitude lower cost. "Accuracy" here is agreement with the averaged answers of two larger models (GPT-6 Astra and Fable 5.1), not independently verified correctness. Source: TypeSafe AI.</figcaption>
 </figure>
 
 ## Why the confidence score matters most
